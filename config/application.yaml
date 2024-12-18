@@ -1,0 +1,12 @@
+app_name: framework-python
+log_level: DEBUG
+basepath: /home/ya/mapdata/
+baseurl: 119.45.31.65
+baseport: 33069
+projid: mb
+picmoudle:
+rabbitmq:
+  sourceip: 119.45.31.65
+  amqpport: 5672
+  myvhost: /
+  queue: framework-python
