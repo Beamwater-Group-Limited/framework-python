@@ -1,6 +1,7 @@
 import logging
 import os
 
+import requests
 import simplejson as json
 import falcon
 from app import config
@@ -24,117 +25,17 @@ class ConfigController:
 class GetAllFunctionController(ConfigController):
     def on_get(self, req, resp):
         try:
+            # 调用接口返回数据
+            url = f"http://{config.baseurl}:28486/v1/functionGetController"
+            # 调用请求，并传值
+            response = requests.post(url)
+            json_string = response.content.decode('utf-8')
+            # 将字符串解析为 JSON 对象
+            json_data = json.loads(json_string)
+            back = json_data['data']
             resp.body = json.dumps(ResponEntity().ok(
                 "获取所有的功能项成功",
-                [
-                    {
-                        "name": "测试大模型类型1",
-                        "value": [
-                            {
-                                "function_name": "详细描述",
-                                "http_url": "http://192.168.0.70:28486/v1/inferenceController",
-                                "parameters": [
-                                    {
-                                        "key": "text",
-                                        "default_value": "## 任务说明\n对给定的监控画面,进行详细分析与描述。\n\n### 分析要求\n1. **描述侧重点**：可以侧重异常分析，对画面中存在的异常现象进行深入分析。  \n2. **描述要求**：\n   - 必须基于画面中清晰可见的事实对异常进行描述。不得添加画面中无法确认的信息。\n    - 异常对象（如人员、车辆、设施）的外观、位置、行为特征。  \n    - 异常行为可能造成的安全影响或后果。  \n    - 对异常出现的原因与背景进行逻辑分析和推理，但不能使用“可能”、“或许”、“似乎”等模棱两可的词语。  \n    - 描述需条理清晰、逻辑完整，并保证文字流畅可读。  \n   - 字数要求：至少**80字**。\n   - 请使用严谨的叙述口吻，避免过度揣测和不确定性描述。\n\n3. **输出格式要求**：\n   - 输出为一个 txt文本。  \n   - 详细描述（中文）。  \n\n4. **返回格式示例**\n   请参考以下 txt 文本格式示例（此为格式参考）：\n   ```txt\n   \"这里是详细描述内容，80字以上。\"\n   ```\n\n### 最终要求\n- 描述需在80字以上。\n- 遵守上述所有要求并自我检查回答的合理性和完备性。\n",
-                                        "is_empty": "0",
-                                        "is_update": "1"
-                                    },
-                                    {
-                                        "key": "image_data",
-                                        "default_value": "",
-                                        "is_empty": "1",
-                                        "is_update": "1"
-                                    },
-                                    {
-                                        "key": "model_id",
-                                        "default_value": "/home/ya/mapdata/safe/results/unsloth/llava-ov-7b-people-1208",
-                                        "is_empty": "0",
-                                        "is_update": "0"
-                                    }
-                                ]
-                            },
-                            {
-                                "function_name": "异常类型检测",
-                                "http_url": "http://192.168.0.70:28486/v1/inferenceController",
-                                "parameters": [
-                                    {
-                                        "key": "text",
-                                        "default_value": "## 任务说明\n请对给定的监控图像进行全面分析。你的目标是识别下列所有可能的异常情况，而不仅仅是某一个类型。\n### 需要识别的异常类型分为4大类，需要从4大类中的具体异常类型中精确选择 `type` 值\n**1人员 (异常人员数组)**：\n- 无安全防护装备\n- 服装不符合要求\n- 违规行为/打电话,吸烟\n- 操作危险工具\n- 人员攀爬\n**2车辆 (异常车辆数组)**：\n- 未授权车辆进入\n- 车辆违规闯入\n**3物资 (异常物资数组)**：\n- 设施损坏\n- 油料泄漏\n**4环境 (环境危害数组)**：\n- 火光或烟雾\n### 要求\n1. **全面检查**：请逐一对上述所有类型进行检视。若图像中存在任一异常情况，请在对应数组中加入一条记录。\n2. **无异常则为空**：如该类异常不存在，请确保对应的数组为空。\n3. **type字段取值严格限制**：\n   - `type` 字段的值必须是上述定义的对应类型列表中其中一个。\n   - 不得使用未定义的词汇作为 `type` 值，也不得使用上位类别名（如“人员”）代替具体类型。\n4. **JSON输出结构**：请严格按照下方给定的 JSON 示例回答。不得省略任意一个键，即使为空数组也要保留。\n   - `type`字段的值必须从上面定义的类型数组中精确选择。\n\n### 返回格式示例\n请参考以下 JSON 格式。若有异常则在相应数组中填入一条，每条记录包含：\n- `type`: 从上述定义的类型中选择一个（必须精确匹配给定类型）\n\n```json\n{\n  \"人员\": [\n    {\n      \"type\": \"\"\n    }\n  ],\n  \"车辆\": [],\n  \"资源\": [],\n  \"环境\": []\n}\n```\n\n### 最终要求\n- 对图像中的所有元素进行全面识别：如有人无安全装备就写入\"人员\"数组；如有车辆闯入就写入\"车辆\"数组；以此类推。\n- 若某类异常不存在，则对应数组需为空。\n- 严格使用上述给定的类型名称作为 `type` 的取值，不得使用其他名称。\n\n请根据以上要求输出最终的 JSON 格式结果。\n",
-                                        "is_empty": "0",
-                                        "is_update": "1"
-                                    },
-                                    {
-                                        "key": "image_data",
-                                        "default_value": "",
-                                        "is_empty": "1",
-                                        "is_update": "1"
-                                    },
-                                    {
-                                        "key": "model_id",
-                                        "default_value": "/home/ya/mapdata/safe/results/unsloth/llava-ov-7b-people-1208",
-                                        "is_empty": "0",
-                                        "is_update": "0"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "手写体识别",
-                        "value": [
-                            {
-                                "function_name": "手写体识别",
-                                "http_url": "http://192.168.0.70:28486/v1/mlpInference",
-                                "parameters": [
-                                    {
-                                        "key": "image_data",
-                                        "default_value": "",
-                                        "is_empty": "0",
-                                        "is_update": "1"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "图文检索",
-                        "value": [
-                            {
-                                "function_name": "图文检索",
-                                "http_url": "http://192.168.0.70:28586/v1/searchController",
-                                "parameters": []
-                            }
-                        ]
-                    },
-                    {
-                        "name": "文字转语音",
-                        "value": [
-                            {
-                                "function_name": "文字转语音",
-                                "http_url": "http://192.168.0.70:28686/v1/ttsController",
-                                "parameters": [
-                                    {
-                                        "key": "text",
-                                        "default_value": "",
-                                        "is_empty": "0",
-                                        "is_update": "1"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "asr",
-                        "value": [
-                            {
-                                "function_name": "asr",
-                                "http_url": "http://192.168.0.70:28686/v1/asrController",
-                                "parameters": []
-                            }
-                        ]
-                    }
-                ]
+                back
             ))
             resp.status = falcon.HTTP_200
         except Exception as e:
