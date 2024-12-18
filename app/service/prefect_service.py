@@ -26,9 +26,6 @@ class PrefectService:
     def run(self) -> str:
         # 循环调用task执行
         for task in self.task_list:
-            # 调用之前，将接口自带的需要的参数，放上去
-            parameters = task.parameters
-            self.kwargs.update(parameters)
             print(f"当前处理的任务为{task.task_name}")
             self.kwargs = task.run(self.kwargs)
         print(self.kwargs)
