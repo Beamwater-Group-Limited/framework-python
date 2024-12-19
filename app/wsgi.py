@@ -7,7 +7,7 @@ import os
 
 from app import config
 from app.controller.config_controller import GetAllFunctionController, SaveFlowController, GetAllFlowController, \
-    GetFlowByIdController, SaveImgDataController
+    GetFlowByIdController, SaveImgDataController, ComponentToFlowController, GetComponentToFlowListController
 from app.controller.prefect_controller import TestRunFlowController, RunFlowController, \
     ImageProcessingFlowRunController, ChatVoiceFlowRunController, GlobalSearchFlowRunController
 
@@ -37,6 +37,8 @@ def create_app():
     imageProcessingFlowRunController = ImageProcessingFlowRunController()
     chatVoiceFlowRunController = ChatVoiceFlowRunController()
     globalSearchFlowRunController = GlobalSearchFlowRunController()
+    componentToFlowController = ComponentToFlowController()
+    getComponentToFlowListController = GetComponentToFlowListController()
 
     cors = CORS(
         allow_origins_list=['http://localhost:8080', 'http://localhost:8082'],
@@ -73,6 +75,11 @@ def create_app():
     api.add_route('/v1/chat_voice_flow_run', chatVoiceFlowRunController)
     # 全局搜索控件调用接口
     api.add_route('/v1/global_search_flow_run', globalSearchFlowRunController)
+
+    # 控件绑定流程
+    api.add_route('/v1/component_to_flow', componentToFlowController)
+    # 获取控件绑定流程列表
+    api.add_route('/v1/get_component_to_flow_list', getComponentToFlowListController)
 
     return api
 

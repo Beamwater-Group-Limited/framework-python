@@ -156,3 +156,64 @@ class SaveImgDataController(ConfigController):
             logger.error("根据图像流将图像保存到指定的位置失败", e)
             resp.body = json.dumps(ResponEntity().exception("根据图像流将图像保存到指定的位置失败", e))
             resp.status = falcon.HTTP_500
+
+
+# 控件绑定流程
+class ComponentToFlowController(ConfigController):
+    def on_post(self, req, resp):
+        try:
+            save_data = req.media["data"]
+            yaml_file = "/home/ya/mapdata/component_to_flow.yaml"
+
+            # 从文件加载现有数据
+            data = []
+            if os.path.exists(yaml_file):
+                with open(yaml_file, 'r', encoding='utf-8') as f:
+                    data = yaml.safe_load(f)
+
+            component_found = False
+            for entry in save_data:
+                for i, item in enumerate(data):
+                    if item.get('component') == entry['component']:
+                        # 找到已有组件则更新
+                        data[i] = entry
+                        component_found = True
+                        break
+
+                # 如果不存在则追加
+                if not component_found:
+                    data.append(entry)
+                component_found = False
+
+            with open(yaml_file, 'w', encoding="utf-8") as file:
+                # 将数据写入新文件
+                yaml.dump(data, file)
+            resp.body = json.dumps(ResponEntity().ok(
+                "控件绑定流程成功",
+                "success"
+            ))
+            resp.status = falcon.HTTP_200
+        except Exception as e:
+            logger.error("控件绑定流程失败", e)
+            resp.body = json.dumps(ResponEntity().exception("控件绑定流程失败", e))
+            resp.status = falcon.HTTP_500
+
+
+# 获取控件绑定流程列表
+class GetComponentToFlowListController(ConfigController):
+    def on_post(self, req, resp):
+        try:
+            yaml_file = "/home/ya/mapdata/component_to_flow.yaml"
+            back = []
+            if os.path.exists(yaml_file):
+                with open(yaml_file, 'r', encoding='utf-8') as f:
+                    back = yaml.safe_load(f)
+            resp.body = json.dumps(ResponEntity().ok(
+                "获取控件绑定流程列表成功",
+                back
+            ))
+            resp.status = falcon.HTTP_200
+        except Exception as e:
+            logger.error("获取控件绑定流程列表失败", e)
+            resp.body = json.dumps(ResponEntity().exception("获取控件绑定流程列表失败", e))
+            resp.status = falcon.HTTP_500
