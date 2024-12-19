@@ -28,7 +28,7 @@ class GetAllFunctionController(ConfigController):
             # 调用接口返回数据
             url = f"http://{config.baseurl}:28486/v1/functionGetController"
             # 调用请求，并传值
-            response = requests.post(url)
+            response = requests.get(url)
             json_string = response.content.decode('utf-8')
             # 将字符串解析为 JSON 对象
             json_data = json.loads(json_string)
