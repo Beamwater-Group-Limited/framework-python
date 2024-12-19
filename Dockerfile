@@ -4,6 +4,6 @@ EXPOSE 8080 8022
 COPY ./app /home/ya/app
 COPY ./config /home/ya/config
 COPY ./gunicorn_conf.py /home/ya/
-COPY ./ReadMe.txt /home/ya/
+COPY ./README.md /home/ya/
 
 CMD ["sh","-c","service ssh start && tail -f /dev/null 2>&1"]
