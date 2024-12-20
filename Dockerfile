@@ -1,4 +1,4 @@
-FROM cbtai-hao.tencentcloudcr.com/cbtai/pydocker-gstreamer-amd:0.1.1
+FROM cbtai-hao.tencentcloudcr.com/cbtai/pydocker-gstreamer-arm:0.1.1
 EXPOSE 8080 8022
 # Add main app2
 COPY ./app /home/ya/app
