@@ -45,7 +45,7 @@ class TaskNode:
 
     def add_parameters(self, kwargs: dict):
         for item in self.parameters:
-            if item.get("is_update") == "0":
+            if str(item.get("is_update")) == "0":
                 k = item.get("key")
                 v = item.get("default_value")
                 kwargs[k] = v
