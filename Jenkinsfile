@@ -4,7 +4,7 @@ pipeline {
     environment {
         registry = "cbtai-hao.tencentcloudcr.com/cbtai"
         name = 'framework-python'
-        tag = "0.1.1-amd"
+        tag = "0.1.2-amd"
         // dev表示开发状态 prod表示发布状态
 //         build = 'dev'
          build = 'prod'
