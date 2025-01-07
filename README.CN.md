@@ -24,5 +24,5 @@ docker镜像包含运行项目所需要的全部依赖
 
 ---
 ## 运行
-将项目代码下载到本地后，根据上面的环境运行对应的docker镜像，然后将代码映射到启动的docker容器内，映射路径为 `~/framework-python -> /home/ya`，然后 `docker exec -it framework-python /bin/bash` 进入到容器内，并且输入`service ssh start && cd /home/ya && gunicorn -c gunicorn_conf.py app.wsgi:app`启动项目
+将项目代码下载到本地后，根据上面的环境运行对应的docker镜像，然后将代码映射到启动的docker容器内，映射路径为 `~/framework-python -> /home/ya`，然后 `docker exec -it framework-python /bin/bash` 进入到容器内，并且输入`service ssh start && cd /home/ya && gunicorn -c gunicorn_conf.py -k uvicorn.workers.UvicornWorker app.wsgi:app`启动项目
 

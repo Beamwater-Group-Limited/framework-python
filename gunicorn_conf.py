@@ -8,7 +8,7 @@
 # @Desc          :
 # 绑定ip和端口号
 bind = '0.0.0.0:8080'
-workers = 1
+workers = 5
 worker_class = 'sync' #使用gevent模式，还可以使用sync 模式，默认的是sync模式
 #超时
 timeout = 300000

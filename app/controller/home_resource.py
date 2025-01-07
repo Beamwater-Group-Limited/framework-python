@@ -9,6 +9,8 @@
 import falcon
 
 from app.model.renderer_model import Jinja2Renderer
+
+
 # 定义基础渲染类，用于渲染 Jinja2 模板的页面响应
 class BasePage:
     def __init__(self, template_name, **kwargs):
@@ -36,23 +38,33 @@ class BasePage:
 # 视频流显示页面
 class VideoMonitoringPage(BasePage):
     def __init__(self):
-        super().__init__('video_monitoring_page.html', stream='rtsp://admin:yuanm201109@192.168.0.112:554/cam/realmonitor?channel=1&subtype=0')
+        super().__init__('video_monitoring_page.html',
+                         stream='rtsp://admin:yuanm201109@192.168.0.112:554/cam/realmonitor?channel=1&subtype=0')
 
 
 # 视频流配置页面
 class ConfigPageTemplate(BasePage):
     def __init__(self):
-        super().__init__('config_page_template.html', stream='rtsp://admin:yuanm201109@192.168.0.112:554/cam/realmonitor?channel=1&subtype=0')
+        super().__init__('config_page_template.html',
+                         stream='rtsp://admin:yuanm201109@192.168.0.112:554/cam/realmonitor?channel=1&subtype=0')
+
 
 # 摄像头使用页面
 class VideoPageUse(BasePage):
     def __init__(self):
         super().__init__('video_monitoring_page_template_styles.html', stream='rtsp://192.168.0.70:8554/mainstream')
 
+
 # 摄像头配置页面
 class VideoConfig(BasePage):
     def __init__(self):
         super().__init__('video_config.html')
+
+
+# Gstreamer流运行配置页面
+class GstreamerConfig(BasePage):
+    def __init__(self):
+        super().__init__('gstreamer_config.html')
 
 
 class ProductPage(BasePage):

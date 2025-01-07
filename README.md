@@ -25,5 +25,5 @@ The docker image contains all the dependencies needed to run the project
 
 ---
 ## RUN
-After downloading the project code to the local, run the corresponding docker image according to the above environment, and then map the code to the startup docker container, the mapping path is `~/framework-python -> /home/ya`. Then `docker exec-it framework-python /bin/bash` goes into the container, And enter `service ssh start && cd /home/ya && gunicorn -c gunicorn_conf.py app.wsgi:app` to start the project
+After downloading the project code to the local, run the corresponding docker image according to the above environment, and then map the code to the startup docker container, the mapping path is `~/framework-python -> /home/ya`. Then `docker exec-it framework-python /bin/bash` goes into the container, And enter `service ssh start && cd /home/ya && gunicorn -c gunicorn_conf.py -k uvicorn.workers.UvicornWorker app.wsgi:app` to start the project
 

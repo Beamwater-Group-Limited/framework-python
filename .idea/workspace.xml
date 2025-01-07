@@ -4,10 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="add files">
+    <list default="true" id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="add video config">
+      <change beforePath="$PROJECT_DIR$/.idea/framework-python.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/framework-python.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.CN.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.CN.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/controller/home_resource.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/home_resource.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/wsgi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gunicorn_conf.py" beforeDir="false" afterPath="$PROJECT_DIR$/gunicorn_conf.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mapdata/templates/video_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/mapdata/templates/video_config.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -54,30 +58,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "JavaScript Debug.video_config.html.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "WebServerToolWindowFactoryState": "true",
-    "git-widget-placeholder": "amd",
-    "last_opened_file_path": "/Users/cbtai/PycharmProjects/framework-python/app/entity",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.language.and.region",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JavaScript Debug.video_config.html.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;amd&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/cbtai/PycharmProjects/framework-python/app/service&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.language.and.region&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/app/entity" />
+      <recent name="$PROJECT_DIR$/app/service" />
       <recent name="$PROJECT_DIR$/app/controller" />
+      <recent name="$PROJECT_DIR$/app/entity" />
+      <recent name="$PROJECT_DIR$/mapdata/templates" />
       <recent name="$PROJECT_DIR$/mapdata/static/js" />
-      <recent name="$PROJECT_DIR$/mapdata/static/css" />
-      <recent name="$PROJECT_DIR$/app/error" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/mapdata/templates" />
@@ -125,7 +129,9 @@
       <workItem from="1736133842643" duration="2012000" />
       <workItem from="1736140141449" duration="15570000" />
       <workItem from="1736160593383" duration="9811000" />
-      <workItem from="1736228301956" duration="6223000" />
+      <workItem from="1736228301956" duration="20693000" />
+      <workItem from="1736249057448" duration="166000" />
+      <workItem from="1736249245388" duration="260000" />
     </task>
     <task id="LOCAL-00001" summary="push structure code">
       <created>1734504859284</created>
@@ -240,7 +246,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736228640691</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="add video config">
+      <option name="closed" value="true" />
+      <created>1736234640389</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1736234640389</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -283,6 +297,7 @@
     <MESSAGE value="update variable judgment" />
     <MESSAGE value="release 0.1.2" />
     <MESSAGE value="add files" />
-    <option name="LAST_COMMIT_MESSAGE" value="add files" />
+    <MESSAGE value="add video config" />
+    <option name="LAST_COMMIT_MESSAGE" value="add video config" />
   </component>
 </project>

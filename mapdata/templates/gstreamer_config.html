@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>视频流运行管理</title>
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../static/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-add {
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 class="text-center">视频流运行管理</h2>
+    <div class="table-container">
+        <!-- 新增按钮 -->
+        <div class="text-end">
+            <a href="javascript:void(0)" class="btn btn-primary btn-add" onclick="openAddModal()">新增</a>
+        </div><!-- 新增 Modal -->
+        <div class="modal" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addModalLabel">新增运行视频流</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addVideoForm">
+                            <div class="mb-3">
+                                <label for="videoStream" class="form-label">选择视频流</label>
+                                <select class="form-select" id="videoStream" required>
+                                    <!-- Options will be populated dynamically from the API -->
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="streamingUrl" class="form-label">流转发地址</label>
+                                <input type="url" class="form-control" id="streamingUrl" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="videoStream" class="form-label">大模型流程挂载</label>
+                                <select class="form-select" id="largeModelProcess" required>
+                                    <!-- Options will be populated dynamically from the API -->
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="addGstreamer()">点击运行流</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 列表 -->
+        <table class="table table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>编号</th>
+                <th>摄像头名称</th>
+                <th>摄像头地址</th>
+                <th>摄像头编码</th>
+                <th>转发地址</th>
+                <th>流程挂载</th>
+                <th>是否运行</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="video-list">
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+{# 添加运行的流 #}
+<script>
+    // Function to open the modal
+    function openAddModal() {
+        const addModal = new bootstrap.Modal(document.getElementById('addModal'));
+        addModal.show();
+    }
+
+    // Function to add a new video
+    async function addGstreamer() {
+        const camera_id = document.getElementById('videoStream').value;
+        const ts_url = document.getElementById('streamingUrl').value;
+        {#const videoCodec = document.getElementById('largeModelProcess').value;#}
+        {#const isActive = document.getElementById('isActive').checked;#}
+
+        const newVideo = {
+            camera_id: camera_id,
+            ts_url: ts_url,
+            process_mount: '',
+        };
+
+        try {
+            const response = await fetch('http://192.168.0.70:28481/v1/addGstreamerController', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newVideo)
+            });
+
+            if (response.ok) {
+                // Reload data after successfully adding a video
+                fetchVideoData();
+                const addModal = bootstrap.Modal.getInstance(document.getElementById('addModal'));
+                addModal.hide();
+            } else {
+                console.error('Error adding video:', await response.text());
+            }
+        } catch (error) {
+            console.error('Error adding video:', error);
+        }
+    }
+</script>
+{# 获取所有运行的视频流 #}
+<script>
+    // Fetch data from the API and populate the table
+    async function fetchVideoData() {
+        try {
+
+            const response = await fetch('http://192.168.0.70:28481/v1/getAllGstreamerController'); // Replace with your actual API endpoint
+            const data = await response.json(); // Parse the JSON response
+            const videoList = data["data"]
+
+            // Reference to the tbody element
+            const tbody = document.getElementById('video-list');
+            tbody.innerHTML = '';
+
+            // Populate the table rows
+            videoList.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.camera_name}</td>
+                    <td>${item.rtsp_url}</td>
+                    <td>${item.encode}</td>
+                    <td>${item.ts_url}</td>
+                    <td>${item.process_mount}</td>
+                    <td>
+                        <span class="badge bg-success">
+                            正在运行
+                        </span>
+                    </td>
+                    <td>
+                        <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="deleteVideo('${item.id}')">停止运行</a>
+                    </td>
+`;
+                tbody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error fetching video data:', error);
+        }
+    }
+
+    // Call the function to load the data
+    fetchVideoData();
+</script>
+{# 停止运行 #}
+<script>
+    async function deleteVideo(videoId) {
+        try {
+            const response = await fetch(`
+            http://192.168.0.70:28481/v1/delInputCameraController?id=${videoId}`);
+
+            if (response.ok) {
+                // Refresh the video list after successful deletion
+                fetchVideoData();
+            } else {
+                alert('删除失败，请重试!');
+            }
+        } catch (error) {
+            alert('网络错误，请稍后再试!');
+        }
+    }
+</script>
+{# 获取所有摄像头数据 #}
+<script>
+    async function populateVideoStreamOptions() {
+        try {
+            const response = await fetch('http://192.168.0.70:28481/v1/getInputCameraController'); // Replace with the correct API endpoint
+
+            const data = await response.json(); // Parse the JSON response
+            const videoList = data["data"]
+
+            const videoStreamSelect = document.getElementById('videoStream');
+
+            videoStreamSelect.innerHTML = ''; // Clear existing options
+            videoList.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.camera_name + "---" + item.rtsp_url;
+                videoStreamSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error fetching video streams:', error);
+        }
+    }
+
+    document.getElementById('addModal').addEventListener('shown.bs.modal', () => {
+        populateVideoStreamOptions();
+    });
+</script>
+</html>

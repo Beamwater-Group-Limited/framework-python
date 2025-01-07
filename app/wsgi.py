@@ -1,4 +1,7 @@
 # !/usr/bin/env/python
+
+from gi.repository import Gst, GObject, GLib
+Gst.init(None)
 import logging
 
 import sys
@@ -9,7 +12,10 @@ import falcon
 from app import config
 from app.controller.config_controller import GetAllFunctionController, SaveFlowController, GetAllFlowController, \
     GetFlowByIdController, SaveImgDataController, ComponentToFlowController, GetComponentToFlowListController
-from app.controller.home_resource import VideoMonitoringPage, ConfigPageTemplate, VideoPageUse, VideoConfig
+from app.controller.gstreamer_controller import GetAllGstreamerController, AddGstreamerController, \
+    PauseGstreamerController
+from app.controller.home_resource import VideoMonitoringPage, ConfigPageTemplate, VideoPageUse, VideoConfig, \
+    GstreamerConfig
 from app.controller.prefect_controller import TestRunFlowController, RunFlowController, \
     ImageProcessingFlowRunController, ChatVoiceFlowRunController, GlobalSearchFlowRunController
 from falcon.asgi import App
@@ -53,6 +59,9 @@ def create_app():
     getInputCameraController = GetInputCameraController()
     delInputCameraController = DelInputCameraController()
     updateInputCameraController = UpdateInputCameraController()
+    getAllGstreamerController = GetAllGstreamerController()
+    addGstreamerController = AddGstreamerController()
+    pauseGstreamerController = PauseGstreamerController()
 
     cors = CORS(
         allow_origins_list=['http://localhost:8080', 'http://localhost:8082'],
@@ -95,9 +104,9 @@ def create_app():
     api.add_route('/v1/component_to_flow', componentToFlowController)
     # 获取控件绑定流程列表
     api.add_route('/v1/get_component_to_flow_list', getComponentToFlowListController)
-    '''
+    """
     video摄像头数据管理
-    '''
+    """
     # 获取所有摄像头数据
     api.add_route('/v1/getInputCameraController', getInputCameraController)
     # 添加摄像头
@@ -106,6 +115,16 @@ def create_app():
     api.add_route('/v1/delInputCameraController', delInputCameraController)
     # 修改摄像头数据
     api.add_route('/v1/updateInputCameraController', updateInputCameraController)
+    """
+    gstreamer流运行管理
+    """
+    # 获取gstreamer流运行
+    api.add_route('/v1/getAllGstreamerController', getAllGstreamerController)
+    # 添加gstreamer流运行
+    api.add_route('/v1/addGstreamerController', addGstreamerController)
+    # 暂停运行的流
+    api.add_route('/v1/pauseGstreamerController', pauseGstreamerController)
+
 
     return api
 
@@ -115,12 +134,14 @@ def rander_page(api:App)-> 'App':
     config_page_template = ConfigPageTemplate()
     video_page_use = VideoPageUse()
     videoConfig = VideoConfig()
+    gstreamerConfig = GstreamerConfig()
     # 添加静态文件中间件
     api.add_static_route('/static', config.basepath / 'static')
     api.add_route('/video_monitoring_page', video_monitoring_page)
     api.add_route('/config_page_template', config_page_template)
     api.add_route('/video_page_use', video_page_use)
     api.add_route('/videoConfig', videoConfig)
+    api.add_route('/gstreamerConfig', gstreamerConfig)
 
 
     return api

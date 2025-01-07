@@ -123,7 +123,26 @@
             </div>
         </div>
 
-        <script>
+        <!-- 列表 -->
+        <table class="table table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>编号</th>
+                <th>名称</th>
+                <th>流地址</th>
+                <th>视频编码</th>
+                <th>是否启动</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="video-list">
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+{# 新增处理 #}
+<script>
             // Function to open the modal
             function openAddModal() {
                 const addModal = new bootstrap.Modal(document.getElementById('addModal'));
@@ -166,24 +185,7 @@
                 }
             }
         </script>
-        <!-- 列表 -->
-        <table class="table table-hover">
-            <thead class="table-dark">
-            <tr>
-                <th>编号</th>
-                <th>名称</th>
-                <th>流地址</th>
-                <th>视频编码</th>
-                <th>是否启动</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody id="video-list">
-            </tbody>
-        </table>
-    </div>
-</div>
-</body>
+{# 获取所有数据 #}
 <script>
     // Fetch data from the API and populate the table
     async function fetchVideoData() {
@@ -226,6 +228,7 @@ onclick="openEditModal('${item.id}', '${item.camera_name}', '${item.rtsp_url}', 
     // Call the function to load the data
     fetchVideoData();
 </script>
+{# 删除处理 #}
 <script>
     async function deleteVideo(videoId) {
         try {
@@ -243,6 +246,7 @@ onclick="openEditModal('${item.id}', '${item.camera_name}', '${item.rtsp_url}', 
         }
     }
 </script>
+{# 修改处理 #}
 <script>
     // Function to open the modal
     function openEditModal(id, camera_name, rtsp_url, encode, is_work) {
