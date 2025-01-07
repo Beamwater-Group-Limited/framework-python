@@ -49,6 +49,11 @@ class VideoPageUse(BasePage):
     def __init__(self):
         super().__init__('video_monitoring_page_template_styles.html', stream='rtsp://192.168.0.70:8554/mainstream')
 
+# 摄像头配置页面
+class VideoConfig(BasePage):
+    def __init__(self):
+        super().__init__('video_config.html')
+
 
 class ProductPage(BasePage):
     def __init__(self):

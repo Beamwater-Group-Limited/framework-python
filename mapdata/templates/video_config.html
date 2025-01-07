@@ -3,70 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>视频流管理</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>视频管理</title>
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../static/js/bootstrap.bundle.min.js"></script>
     <style>
         body {
             background-color: #f8f9fa;
         }
+
         .container {
             margin-top: 50px;
         }
+
         .table-container {
             background: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+
         .btn-add {
             margin-bottom: 20px;
         }
+
         .action-btn {
             margin-right: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2 class="text-center">视频流管理</h2>
-        <div class="table-container">
-            <!-- 新增按钮 -->
-            <div class="text-end">
-                <a href="/add" class="btn btn-primary btn-add">新增</a>
-            </div>
-            <!-- 列表 -->
-            <table class="table table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th>编号</th>
-                        <th>名称</th>
-                        <th>流地址</th>
-                        <th>是否启动</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in streams %}
-                    <tr>
-                        <td>{{ item.id }}</td>
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.url }}</td>
-                        <td>
-                            <span class="badge {{ 'bg-success' if item.is_active else 'bg-secondary' }}">
-                                {{ '启动' if item.is_active else '未启动' }}
-                            </span>
-                        </td>
-                        <td>
-                            <a href="/edit/{{ item.id }}" class="btn btn-warning btn-sm action-btn">修改</a>
-                            <a href="/delete/{{ item.id }}" class="btn btn-danger btn-sm">删除</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<div class="container">
+    <h2 class="text-center">视频管理</h2>
+    <div class="table-container">
+        <!-- 新增按钮 -->
+        <div class="text-end">
+            <a href="javascript:void(0)" class="btn btn-primary btn-add" onclick="openAddModal()">新增</a>
         </div>
+        <!-- 新增 Modal -->
+        <div class="modal" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addModalLabel">新增视频</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addVideoForm">
+                            <div class="mb-3">
+                                <label for="videoName" class="form-label">名称</label>
+                                <input type="text" class="form-control" id="videoName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="videoUrl" class="form-label">流地址</label>
+                                <input type="url" class="form-control" id="videoUrl" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="videoCodec" class="form-label">视频编码</label>
+                                <select class="form-select" id="videoCodec" required>
+                                    <option value="H264">H264</option>
+                                    <option value="H265">H265</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="isActive">
+                                <label class="form-check-label" for="isActive">是否启动</label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="addVideo()">新增</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 修改 Modal -->
+        <div class="modal" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addModalLabel">修改视频</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editVideoForm">
+
+
+                            <div class="mb-3">
+                                <label for="videoId" class="form-label">编号</label>
+                                <input type="text" class="form-control" id="editVideoId" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="videoName" class="form-label">名称</label>
+                                <input type="text" class="form-control" id="editVideoName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="videoUrl" class="form-label">流地址</label>
+                                <input type="url" class="form-control" id="editVideoUrl" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="videoCodec" class="form-label">视频编码</label>
+                                <select class="form-select" id="editVideoCodec" required>
+                                    <option value="H264">H264</option>
+                                    <option value="H265">H265</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="editIsActive">
+                                <label class="form-check-label" for="isActive">是否启动</label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="editVideo()">确认修改</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Function to open the modal
+            function openAddModal() {
+                const addModal = new bootstrap.Modal(document.getElementById('addModal'));
+                addModal.show();
+            }
+
+            // Function to add a new video
+            async function addVideo() {
+                const videoName = document.getElementById('videoName').value;
+                const videoUrl = document.getElementById('videoUrl').value;
+                const videoCodec = document.getElementById('videoCodec').value;
+                const isActive = document.getElementById('isActive').checked;
+
+                const newVideo = {
+                    rtsp_url: videoUrl,
+                    camera_name: videoName,
+                    encode: videoCodec,
+                    is_work: isActive
+                };
+
+                try {
+                    const response = await fetch('http://192.168.0.70:28481/v1/addInputCameraController', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(newVideo)
+                    });
+
+                    if (response.ok) {
+                        // Reload data after successfully adding a video
+                        fetchVideoData();
+                        const addModal = bootstrap.Modal.getInstance(document.getElementById('addModal'));
+                        addModal.hide();
+                    } else {
+                        console.error('Error adding video:', await response.text());
+                    }
+                } catch (error) {
+                    console.error('Error adding video:', error);
+                }
+            }
+        </script>
+        <!-- 列表 -->
+        <table class="table table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>编号</th>
+                <th>名称</th>
+                <th>流地址</th>
+                <th>视频编码</th>
+                <th>是否启动</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="video-list">
+            </tbody>
+        </table>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</div>
 </body>
+<script>
+    // Fetch data from the API and populate the table
+    async function fetchVideoData() {
+        try {
+
+            const response = await fetch('http://192.168.0.70:28481/v1/getInputCameraController'); // Replace with your actual API endpoint
+            const data = await response.json(); // Parse the JSON response
+            const videoList = data["data"]
+
+            // Reference to the tbody element
+            const tbody = document.getElementById('video-list');
+            tbody.innerHTML = '';
+
+            // Populate the table rows
+            videoList.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.camera_name}</td>
+                    <td>${item.rtsp_url}</td>
+                    <td>${item.encode}</td>
+                    <td>
+                        <span class="badge ${item.is_work ? 'bg-success' : 'bg-secondary'}">
+                            ${item.is_work ? '启动' : '未启动'}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="javascript:void(0)" class="btn btn-warning btn-sm action-btn"
+onclick="openEditModal('${item.id}', '${item.camera_name}', '${item.rtsp_url}', '${item.encode}', '${item.is_work}' )">修改</a>
+                        <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="deleteVideo('${item.id}')">删除</a>
+                    </td>
+`;
+                tbody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error fetching video data:', error);
+        }
+    }
+
+    // Call the function to load the data
+    fetchVideoData();
+</script>
+<script>
+    async function deleteVideo(videoId) {
+        try {
+            const response = await fetch(`
+            http://192.168.0.70:28481/v1/delInputCameraController?id=${videoId}`);
+
+            if (response.ok) {
+                // Refresh the video list after successful deletion
+                fetchVideoData();
+            } else {
+                alert('删除失败，请重试!');
+            }
+        } catch (error) {
+            alert('网络错误，请稍后再试!');
+        }
+    }
+</script>
+<script>
+    // Function to open the modal
+    function openEditModal(id, camera_name, rtsp_url, encode, is_work) {
+        document.getElementById('editVideoId').value = id;
+        document.getElementById('editVideoName').value = camera_name;
+        document.getElementById('editVideoUrl').value = rtsp_url;
+        document.getElementById('editVideoCodec').value = encode;
+        document.getElementById('editIsActive').checked = is_work === 'true' || is_work === true;
+        const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+        editModal.show();
+    }
+
+    // Function to add a new video
+    async function editVideo() {
+        const id = document.getElementById('editVideoId').value
+        const camera_name = document.getElementById('editVideoName').value
+        const rtsp_url = document.getElementById('editVideoUrl').value
+        const encode = document.getElementById('editVideoCodec').value
+        const is_work = document.getElementById('editIsActive').checked
+
+        const editVideo = {
+            id: id,
+            rtsp_url: rtsp_url,
+            camera_name: camera_name,
+            encode: encode,
+            is_work: is_work
+        };
+
+        try {
+            const response = await fetch('http://192.168.0.70:28481/v1/updateInputCameraController', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(editVideo)
+            });
+
+            if (response.ok) {
+                // Reload data after successfully adding a video
+                fetchVideoData();
+                const editModal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
+                editModal.hide();
+            } else {
+                console.error('Error edit video:', await response.text());
+            }
+        } catch (error) {
+            console.error('Error edit video:', error);
+        }
+    }
+</script>
 </html>

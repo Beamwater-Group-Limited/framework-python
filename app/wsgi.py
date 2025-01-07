@@ -9,10 +9,13 @@ import falcon
 from app import config
 from app.controller.config_controller import GetAllFunctionController, SaveFlowController, GetAllFlowController, \
     GetFlowByIdController, SaveImgDataController, ComponentToFlowController, GetComponentToFlowListController
-from app.controller.home_resource import VideoMonitoringPage, ConfigPageTemplate, VideoPageUse
+from app.controller.home_resource import VideoMonitoringPage, ConfigPageTemplate, VideoPageUse, VideoConfig
 from app.controller.prefect_controller import TestRunFlowController, RunFlowController, \
     ImageProcessingFlowRunController, ChatVoiceFlowRunController, GlobalSearchFlowRunController
 from falcon.asgi import App
+
+from app.controller.video_controller import AddInputCameraController, GetInputCameraController, \
+    DelInputCameraController, UpdateInputCameraController
 
 current_dir = os.path.abspath(os.path.dirname(__file__))
 rootPath = os.path.split(current_dir)[0]
@@ -46,6 +49,10 @@ def create_app():
     globalSearchFlowRunController = GlobalSearchFlowRunController()
     componentToFlowController = ComponentToFlowController()
     getComponentToFlowListController = GetComponentToFlowListController()
+    addInputCameraController = AddInputCameraController()
+    getInputCameraController = GetInputCameraController()
+    delInputCameraController = DelInputCameraController()
+    updateInputCameraController = UpdateInputCameraController()
 
     cors = CORS(
         allow_origins_list=['http://localhost:8080', 'http://localhost:8082'],
@@ -88,6 +95,17 @@ def create_app():
     api.add_route('/v1/component_to_flow', componentToFlowController)
     # 获取控件绑定流程列表
     api.add_route('/v1/get_component_to_flow_list', getComponentToFlowListController)
+    '''
+    video摄像头数据管理
+    '''
+    # 获取所有摄像头数据
+    api.add_route('/v1/getInputCameraController', getInputCameraController)
+    # 添加摄像头
+    api.add_route('/v1/addInputCameraController', addInputCameraController)
+    # 删除摄像头数据
+    api.add_route('/v1/delInputCameraController', delInputCameraController)
+    # 修改摄像头数据
+    api.add_route('/v1/updateInputCameraController', updateInputCameraController)
 
     return api
 
@@ -96,11 +114,14 @@ def rander_page(api:App)-> 'App':
     video_monitoring_page = VideoMonitoringPage()
     config_page_template = ConfigPageTemplate()
     video_page_use = VideoPageUse()
+    videoConfig = VideoConfig()
     # 添加静态文件中间件
     api.add_static_route('/static', config.basepath / 'static')
     api.add_route('/video_monitoring_page', video_monitoring_page)
     api.add_route('/config_page_template', config_page_template)
     api.add_route('/video_page_use', video_page_use)
+    api.add_route('/videoConfig', videoConfig)
+
 
     return api
 
