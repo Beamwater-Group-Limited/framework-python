@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>配置变量页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 40px;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        function saveToYaml() {
+            const inputContent = document.getElementById('newInput').value.trim();
+            if (!inputContent) {
+                alert("输入框不能为空！");
+                return;
+            }
+
+            fetch('/save-to-yaml', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ value: inputContent }),
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("保存成功！");
+                } else {
+                    alert("保存失败，请稍后再试！");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+    <h1>配置变量页面</h1>
+    <div class="form-container">
+        <form method="POST" action="{{ submit_url }}">
+            {% for config in configs %}
+            <div class="form-group">
+                <label for="{{ config.name }}">{{ config.label }}</label>
+                {% if config.type == "text" %}
+                <input type="text" id="{{ config.name }}" name="{{ config.name }}" value="{{ config.value }}" placeholder="{{ config.placeholder }}">
+                {% elif config.type == "textarea" %}
+                <textarea id="{{ config.name }}" name="{{ config.name }}" placeholder="{{ config.placeholder }}">{{ config.value }}</textarea>
+                {% elif config.type == "select" %}
+                <select id="{{ config.name }}" name="{{ config.name }}">
+                    {% for option in config.options %}
+                    <option value="{{ option.value }}" {% if option.value == config.value %}selected{% endif %}>
+                        {{ option.label }}
+                    </option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <div class="form-group">
+                <label for="newInput">新增配置项</label>
+                <input type="text" id="newInput" name="newInput" placeholder="请输入需要保存的内容">
+                <button type="button" onclick="saveToYaml()">保存</button>
+            </div>
+            <button type="submit">提交配置</button>
+        </form>
+    </div>
+</body>
+</html>

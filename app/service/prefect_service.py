@@ -28,7 +28,6 @@ class PrefectService:
         for task in self.task_list:
             print(f"当前处理的任务为{task.task_name}")
             self.kwargs = task.run(self.kwargs)
-        print(self.kwargs)
         return self.kwargs
 
 

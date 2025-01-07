@@ -23,7 +23,7 @@ class ConfigController:
 
 # 获取所有的功能项
 class GetAllFunctionController(ConfigController):
-    def on_get(self, req, resp):
+    async def on_get(self, req, resp):
         try:
             # 调用接口返回数据
             url = f"http://{config.baseurl}:28486/v1/functionGetController"
@@ -46,7 +46,7 @@ class GetAllFunctionController(ConfigController):
 
 # 流程保存
 class SaveFlowController(ConfigController):
-    def on_post(self, req, resp):
+    async def on_post(self, req, resp):
         try:
             all_function = req.media["all_function"]
             flow_name = req.media["flow_name"]
@@ -73,7 +73,7 @@ class SaveFlowController(ConfigController):
 
 # 获取所有的流程
 class GetAllFlowController(ConfigController):
-    def on_post(self, req, resp):
+    async def on_post(self, req, resp):
         try:
 
             yaml_folder = f"/home/ya/mapdata/flow"
@@ -106,7 +106,7 @@ class GetAllFlowController(ConfigController):
 
 # 根据流程id获取流程
 class GetFlowByIdController(ConfigController):
-    def on_post(self, req, resp):
+    async def on_post(self, req, resp):
         try:
             flow_id = req.media["flow_id"]
             yaml_path = f"/home/ya/mapdata/flow/{flow_id}.yaml"
@@ -130,7 +130,7 @@ class GetFlowByIdController(ConfigController):
 
 # 根据图像流将图像保存到指定的位置
 class SaveImgDataController(ConfigController):
-    def on_post(self, req, resp):
+    async def on_post(self, req, resp):
         try:
             file = req.media["file"]
             if file is None:
@@ -160,7 +160,7 @@ class SaveImgDataController(ConfigController):
 
 # 控件绑定流程
 class ComponentToFlowController(ConfigController):
-    def on_post(self, req, resp):
+    async def on_post(self, req, resp):
         try:
             save_data = req.media["data"]
             yaml_file = "/home/ya/mapdata/component_to_flow.yaml"
@@ -201,7 +201,7 @@ class ComponentToFlowController(ConfigController):
 
 # 获取控件绑定流程列表
 class GetComponentToFlowListController(ConfigController):
-    def on_post(self, req, resp):
+    async def on_post(self, req, resp):
         try:
             yaml_file = "/home/ya/mapdata/component_to_flow.yaml"
             back = []
@@ -217,3 +217,22 @@ class GetComponentToFlowListController(ConfigController):
             logger.error("获取控件绑定流程列表失败", e)
             resp.body = json.dumps(ResponEntity().exception("获取控件绑定流程列表失败", e))
             resp.status = falcon.HTTP_500
+
+# # 绑定配置页面变量
+# class VariableSaveController(ConfigController):
+#     async def on_post(self, req, resp):
+#         try:
+#             stream = req.media["stream"]
+#             config_path = "/home/ya/mapdata/variable_config.yaml"
+#             if os.path.exists(yaml_file):
+#                 with open(yaml_file, 'r', encoding='utf-8') as f:
+#                     back = yaml.safe_load(f)
+#             resp.body = json.dumps(ResponEntity().ok(
+#                 "获取控件绑定流程列表成功",
+#                 back
+#             ))
+#             resp.status = falcon.HTTP_200
+#         except Exception as e:
+#             logger.error("获取控件绑定流程列表失败", e)
+#             resp.body = json.dumps(ResponEntity().exception("获取控件绑定流程列表失败", e))
+#             resp.status = falcon.HTTP_500

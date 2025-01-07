@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>摄像头使用实例</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .header {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #007bff;
+            color: white;
+            font-size: 2rem;
+        }
+        .main-content {
+            flex: 9;
+            display: flex;
+            flex-direction: row;
+        }
+        .video-container {
+            flex: 7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f9f9f9;
+        }
+        .video-container video {
+            max-width: 90%;
+            height: auto;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+        .text-container {
+            flex: 3;
+            padding: 10px;
+            background-color: #eee;
+            overflow-y: auto;
+        }
+        .text-content {
+            font-size: 1rem;
+            color: #333;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<script src="../static/js/adapter.min.js"></script>
+<script src="../static/js/webrtcstreamer.js"></script>
+<body>
+    <!-- 顶部标题部分 -->
+    <div class="header">
+        来访人员描述
+    </div>
+    
+    <!-- 主内容部分 -->
+    <div class="main-content">
+        <!-- 左侧视频展示 -->
+        <div class="video-container">
+            <video controls autoplay muted id="video">
+                <source src="{{ stream }}" type="application/x-mpegURL">
+                您的浏览器不支持视频播放。
+            </video>
+        </div><!-- 右侧文本显示 -->
+        <div class="text-container"
+             style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <!-- 上方动态文字描述 -->
+            <div class="text-content" id="dynamic-text"
+                 style="flex: 1; font-size: 1.2rem; font-family: 'Helvetica', sans-serif; text-align: center; display: flex; flex-direction: row; justify-content: center; align-items: center;">
+                <span style="background-color: #007bff; color: white; padding: 2px 8px; border-radius: 4px; margin-right: 10px;">布防</span>
+                <textarea
+                        type="text" id="user-input" placeholder="设置布防信息"
+                        style="padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1.2rem; flex: 1.2;"></textarea>
+                <button id="start-defense-btn"
+                        style="padding: 10px 20px; margin-left: 10px; border: none; background-color: #28a745; color: white; font-size: 1.2rem; border-radius: 4px; cursor: pointer;"
+                        onclick="loopCall()">
+                    启动布防
+                </button>
+            </div>
+
+            <!-- 当前时间显示 -->
+            <div id="current-time"
+                 style="flex: 1; font-size: 1.2rem; font-family: 'Helvetica', sans-serif; text-align: center; margin-top: 10px; color: #555;">
+                <span id="time-display"></span>
+            </div>
+
+            <script>
+                // 实现动态显示当前时间
+                function updateTime() {
+                    const now = new Date();
+                    const formattedTime = now.toLocaleString('zh-CN', {
+                        hour12: false,
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+                    document.getElementById('time-display').textContent = formattedTime;
+                }
+
+                // 每秒更新一次当前时间
+                setInterval(updateTime, 1000);
+                updateTime();
+            </script><!-- 下方文本框显示特征 -->
+
+            <div id="feature-textbox"
+                 style="flex: 9; width: 100%; margin-top: 10px; font-size: 1.2rem; font-family: 'Courier New', monospace; line-height: 1.6; height: 1.6em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            </div>
+
+            <!-- 历史布防预警信息 -->
+            <div id="alert-history-container"
+                 style="margin-top: 10px; width: 100%; background-color: #f4f4f4; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+                <strong style="font-size: 1.1rem; color: #333;">历史布防预警信息</strong>
+                <ul id="log-list" style="list-style: none; padding: 0; font-size: 1.2rem; color: #333; margin-top: 20px; width: 100%; border-top: 1px solid #ccc;">
+</ul>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    // 定义 stream 值为模板语言注入的变量
+	var stream = "{{ stream | safe }}"; // 确保 `stream` 是合法字符串并适合插入到前端。
+	var webRtcServer      = null;
+	window.onload         = function() {
+		webRtcServer      = new WebRtcStreamer("video","http://192.168.0.70:8000");
+		webRtcServer.connect(stream);
+	}
+	window.onbeforeunload = function() { webRtcServer.disconnect(); }
+</script>
+<script>
+    const videoElement = document.getElementById("video");
+    const textArea = document.getElementById("feature-textbox");
+    const maxLength = 500; // 限制 textarea 的最大字符长度（可以调整）
+    const canvas = document.createElement("canvas");
+    const apiEndpoint = "http://192.168.0.70:28486/v1/inferenceController"; // 替换为实际接口 URL
+
+    // 定期从视频中获取帧并发送到接口
+    function getFrameAndProcess() {
+       return new Promise((resolve, reject) =>{
+            if (!videoElement || videoElement.readyState !== 4) {
+                console.warn("视频未加载完成，无法捕获帧");
+                resolve();
+                {#return;#}
+            }
+
+            const width = videoElement.videoWidth;
+            const height = videoElement.videoHeight;
+
+            // 调整 Canvas 尺寸
+            canvas.width = width;
+            canvas.height = height;
+
+            // 获取帧画面
+            const context = canvas.getContext("2d");
+            context.drawImage(videoElement, 0, 0, width, height);
+
+
+            // 将捕获的帧转为 Base64
+            const imageBase64 = canvas.toDataURL("image/jpeg", 0.8); // 使用图像质量参数，默认为 0.8
+            const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, '');
+
+            // 调用 API
+            fetch(apiEndpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    model_id: "/home/ya/mapdata/safe/results/unsloth/llava-ov-7b-people-1208",
+                    text: document.getElementById("user-input").value || "描述画面",
+                    local_files_only: 1,
+                    image_data: base64Data
+                }),
+            }).then(response => response.json())
+            .then(data => {
+                // 将返回结果更新到 textarea
+                {#textArea.value = data.data.text || "未检测到有效结果";#}
+                if (data.data.text !== undefined){
+                    addMessage(data.data.text)
+                    if (data.data.text !== undefined && data.data.text.includes("有人")){
+                        // 获取当前时间
+                        const now = new Date();
+                        const timeStamp = `[${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ${now.toLocaleTimeString('zh-CN', {hour12: false})}]`;
+
+                        // 在 data.data.text 前加上时间戳
+                        const formattedText = `${timeStamp} ${data.data.text}`;
+                        addToQueue(formattedText);
+                    }
+                }
+                resolve();
+            }).catch(error => {
+                console.error("调用接口失败:", error);
+                textArea.value = "接口调用失败，请检查网络或服务器状态";
+                reject();
+            })
+       })
+    }
+
+    /**
+     * 插入新消息到 textarea 顶部
+     * @param {string} newMessage 新消息内容
+     */
+    function addMessage(newMessage) {
+    // 获取当前时间
+    const now = new Date();
+    const timeStamp = now.toLocaleTimeString('zh-CN', { hour12: false });
+
+    // 格式化新的消息内容
+    const formattedMessage = `[${timeStamp}] ${newMessage}`;
+
+    // 将新消息插入到 feature-textbox
+    const textBox = document.getElementById('feature-textbox');
+    if (textBox) {
+        textBox.textContent = formattedMessage; // 使用 textContent 确保只显示一行文字
+    }
+}
+
+    async function loopCall() {
+        await getFrameAndProcess(); // 执行核心逻辑
+        setTimeout(loopCall, 0); // 递归延迟调用
+    }
+
+    // 定义队列和最大长度
+const queue = [];
+const maxQueueLength = 1;
+
+// 获取 UL 容器
+const logList = document.getElementById('log-list');
+
+/**
+ * 增加消息到队列并更新显示
+ * @param {string} message - 要添加的消息
+ */
+function addToQueue(message) {
+    // 获取当前时间并格式化消息
+
+    // 添加到队列
+    queue.push(message);
+
+    // 如果超出最大长度，移除最早的消息
+    if (queue.length > maxQueueLength) {
+        queue.shift();
+    }
+
+    // 更新 UI
+    updateUI();
+}
+
+/**
+ * 更新 UL 的内容
+ */
+function updateUI() {
+    // 清空 UL 的内容
+    logList.innerHTML = '';
+
+    // 遍历队列并生成 LI 项
+    queue.forEach(item => {
+        const li = document.createElement('li');
+        li.style.padding = '6px 0';
+        li.style.borderBottom = '1px solid #ddd';
+        li.textContent = item; // 设置 LI 的文本内容
+        logList.appendChild(li);
+    });
+}
+
+</script>
+</html>

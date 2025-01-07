@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>视频流管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-add {
+            margin-bottom: 20px;
+        }
+        .action-btn {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">视频流管理</h2>
+        <div class="table-container">
+            <!-- 新增按钮 -->
+            <div class="text-end">
+                <a href="/add" class="btn btn-primary btn-add">新增</a>
+            </div>
+            <!-- 列表 -->
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>编号</th>
+                        <th>名称</th>
+                        <th>流地址</th>
+                        <th>是否启动</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in streams %}
+                    <tr>
+                        <td>{{ item.id }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.url }}</td>
+                        <td>
+                            <span class="badge {{ 'bg-success' if item.is_active else 'bg-secondary' }}">
+                                {{ '启动' if item.is_active else '未启动' }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="/edit/{{ item.id }}" class="btn btn-warning btn-sm action-btn">修改</a>
+                            <a href="/delete/{{ item.id }}" class="btn btn-danger btn-sm">删除</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

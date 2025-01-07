@@ -21,7 +21,7 @@ class PrefectController:
 
 # 测试流程
 class TestRunFlowController(PrefectController):
-    def on_post(self, req, resp):
+    async def on_post(self, req, resp):
         try:
             flow_id = req.media["id"]
             data = req.media["data"]
@@ -54,7 +54,7 @@ class TestRunFlowController(PrefectController):
 
 # 流程调用接口
 class RunFlowController(PrefectController):
-    def on_post(self, req, resp):
+    async def on_post(self, req, resp):
         try:
             flow_id = req.media["id"]
             data = req.media["data"]
@@ -88,7 +88,7 @@ class RunFlowController(PrefectController):
 
 # 图片处理控件调用接口
 class ImageProcessingFlowRunController(PrefectController):
-    def on_post(self, req, resp):
+    async def on_post(self, req, resp):
         try:
             # 统一接口参数
             input_type = req.media["input_type"]
@@ -136,7 +136,7 @@ class ImageProcessingFlowRunController(PrefectController):
 
 # 聊天语音控件调用接口
 class ChatVoiceFlowRunController(PrefectController):
-    def on_post(self, req, resp):
+    async def on_post(self, req, resp):
         try:
             # 统一接口参数
             input_type = req.media["input_type"]
@@ -184,7 +184,7 @@ class ChatVoiceFlowRunController(PrefectController):
 
 # 全局检索控件调用接口
 class GlobalSearchFlowRunController(PrefectController):
-    def on_post(self, req, resp):
+    async def on_post(self, req, resp):
         try:
             # 统一接口参数
             input_type = req.media["input_type"]
@@ -248,7 +248,7 @@ class GlobalSearchFlowRunController(PrefectController):
 
 # 文本处理控件调用接口
 class TextProcessingFlowRunController(PrefectController):
-    def on_post(self, req, resp):
+    async def on_post(self, req, resp):
         try:
             # 统一接口参数
             input_type = req.media["input_type"]

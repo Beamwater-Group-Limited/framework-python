@@ -1,15 +1,18 @@
 # !/usr/bin/env/python
 import logging
 
-import falcon
 import sys
 import os
+
+import falcon
 
 from app import config
 from app.controller.config_controller import GetAllFunctionController, SaveFlowController, GetAllFlowController, \
     GetFlowByIdController, SaveImgDataController, ComponentToFlowController, GetComponentToFlowListController
+from app.controller.home_resource import VideoMonitoringPage, ConfigPageTemplate, VideoPageUse
 from app.controller.prefect_controller import TestRunFlowController, RunFlowController, \
     ImageProcessingFlowRunController, ChatVoiceFlowRunController, GlobalSearchFlowRunController
+from falcon.asgi import App
 
 current_dir = os.path.abspath(os.path.dirname(__file__))
 rootPath = os.path.split(current_dir)[0]
@@ -17,6 +20,10 @@ sys.path.append(rootPath)
 
 from falcon_cors import CORS
 from app.controller.helloworld_controller import HelloWorldController
+
+
+sys.path.insert(0, './app')
+
 
 logger = logging.getLogger(config.app_name)
 # 配置日志模块的信息标准【什么等级的信息会被捕捉】
@@ -45,11 +52,12 @@ def create_app():
         allow_all_origins=True,
         allow_credentials_all_origins=True,
         allow_all_methods=True,
-        allow_all_headers=True,
+        allow_all_headers=True
     )
 
     # api = falcon.API()
-    api = falcon.API(middleware=[cors.middleware])
+    # api = falcon.API(middleware=[cors.middleware])
+    api = App(cors_enable=True)
     api.add_route("/helloWorld", helloWordController)
 
     # 获取所有功能项
@@ -83,5 +91,18 @@ def create_app():
 
     return api
 
+def rander_page(api:App)-> 'App':
+    # 创建 HomeResource 的实例，用于处理主页的相关请求
+    video_monitoring_page = VideoMonitoringPage()
+    config_page_template = ConfigPageTemplate()
+    video_page_use = VideoPageUse()
+    # 添加静态文件中间件
+    api.add_static_route('/static', config.basepath / 'static')
+    api.add_route('/video_monitoring_page', video_monitoring_page)
+    api.add_route('/config_page_template', config_page_template)
+    api.add_route('/video_page_use', video_page_use)
 
-app = create_app()
+    return api
+
+# 调用方法创建应用实例，赋值给变量 app
+app = rander_page(create_app())

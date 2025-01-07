@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="release 0.1.2">
+      <change beforePath="$PROJECT_DIR$/app/controller/config_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/config_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controller/helloworld_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/helloworld_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controller/prefect_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/prefect_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/entity/task_node.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/entity/task_node.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/service/prefect_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/prefect_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/wsgi.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="REMOTE">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="origin/amd" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2qNWepzvKWnUjbdmxZTo2gi2oQy" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;amd&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/cbtai/PycharmProjects/framework-python/mapdata/static/js&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.language.and.region&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/mapdata/static/js" />
+      <recent name="$PROJECT_DIR$/app/controller" />
+      <recent name="$PROJECT_DIR$/app/error" />
+      <recent name="$PROJECT_DIR$/app/model" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/mapdata/templates" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-PY-243.22562.220" />
+        <option value="bundled-python-sdk-0fc6c617c4bd-9a18a617cbe4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.22562.220" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="" />
+      <created>1734503610483</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1734503610483</updated>
+      <workItem from="1734503612443" duration="1259000" />
+      <workItem from="1734504901443" duration="12834000" />
+      <workItem from="1734915685880" duration="10830000" />
+      <workItem from="1735633643777" duration="702000" />
+      <workItem from="1735890354714" duration="353000" />
+      <workItem from="1735890716608" duration="49000" />
+      <workItem from="1735890773536" duration="63000" />
+      <workItem from="1735891028171" duration="262000" />
+      <workItem from="1735891296193" duration="1705000" />
+      <workItem from="1735898782703" duration="6000" />
+      <workItem from="1735898801674" duration="1160000" />
+      <workItem from="1736123252229" duration="3117000" />
+      <workItem from="1736128003547" duration="4875000" />
+      <workItem from="1736133842643" duration="2012000" />
+      <workItem from="1736140141449" duration="15570000" />
+      <workItem from="1736160593383" duration="9811000" />
+    </task>
+    <task id="LOCAL-00001" summary="push structure code">
+      <created>1734504859284</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1734504859284</updated>
+    </task>
+    <task id="LOCAL-00002" summary="delete .idea">
+      <created>1734505007626</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1734505007626</updated>
+    </task>
+    <task id="LOCAL-00003" summary="update get an image">
+      <created>1734505474863</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1734505474863</updated>
+    </task>
+    <task id="LOCAL-00004" summary="update README.md">
+      <created>1734508037908</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1734508037908</updated>
+    </task>
+    <task id="LOCAL-00005" summary="add README.CN.md">
+      <created>1734508546411</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1734508546411</updated>
+    </task>
+    <task id="LOCAL-00006" summary="update prefect code">
+      <created>1734510342041</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1734510342041</updated>
+    </task>
+    <task id="LOCAL-00007" summary="add component connect flow">
+      <created>1734587625071</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1734587625071</updated>
+    </task>
+    <task id="LOCAL-00008" summary="add Dockerfile Jenkinsfile">
+      <created>1734589504392</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1734589504392</updated>
+    </task>
+    <task id="LOCAL-00009" summary="add gunicorn">
+      <created>1734592105232</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1734592105232</updated>
+    </task>
+    <task id="LOCAL-00010" summary="add gunicorn">
+      <created>1734592701349</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1734592701349</updated>
+    </task>
+    <task id="LOCAL-00011" summary="update Dockerfile">
+      <created>1734592893213</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1734592893213</updated>
+    </task>
+    <task id="LOCAL-00012" summary="update variable judgment">
+      <created>1735023434837</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1735023434837</updated>
+    </task>
+    <task id="LOCAL-00013" summary="update variable judgment">
+      <created>1735023471582</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1735023471582</updated>
+    </task>
+    <task id="LOCAL-00014" summary="update variable judgment">
+      <created>1735023493946</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1735023493946</updated>
+    </task>
+    <task id="LOCAL-00015" summary="release 0.1.2">
+      <created>1735023544938</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1735023544938</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/amd" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="push structure code" />
+    <MESSAGE value="delete .idea" />
+    <MESSAGE value="update get an image" />
+    <MESSAGE value="update README.md" />
+    <MESSAGE value="add README.CN.md" />
+    <MESSAGE value="update prefect code" />
+    <MESSAGE value="add component connect flow" />
+    <MESSAGE value="add Dockerfile Jenkinsfile" />
+    <MESSAGE value="add gunicorn" />
+    <MESSAGE value="update Dockerfile" />
+    <MESSAGE value="update variable judgment" />
+    <MESSAGE value="release 0.1.2" />
+    <option name="LAST_COMMIT_MESSAGE" value="release 0.1.2" />
+  </component>
+</project>
