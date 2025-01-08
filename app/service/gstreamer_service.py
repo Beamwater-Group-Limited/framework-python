@@ -13,6 +13,8 @@ from app.service.gstreamer_pieline_service import GstreamerPiePline
 
 import multiprocessing
 
+multiprocessing.set_start_method('fork')
+
 class GstreamerManager:
     """
     gstreamer流程管理类
@@ -25,6 +27,7 @@ class GstreamerManager:
     def start_new_gstreamer(self, gstreamer_config):
         gstreamer = GstreamerPiePline(gstreamer_config)
         process = multiprocessing.Process(target=gstreamer.start)
+        process.daemon = True  # 设置为守护进程
         process.start()
         gstreamer_config['gstreamer_instance'] = gstreamer
         self.gstreamer_piepline.append(gstreamer_config)

@@ -53,9 +53,10 @@ class GstreamerPiePline:
                 buf = sample.get_buffer()
                 data = buf.extract_dup(0, buf.get_size())
 
-                if (self.process_mount is None) or (self.process_mount == "") or (
-                        not os.path.exists(self.process_mount)):
-                    print("当前的流没有挂载")
+                # if (self.process_mount is None) or (self.process_mount == "") or (
+                #         not os.path.exists(self.process_mount)):
+                #     p = 1
+                #     # print("当前的流没有挂载")
 
                 return Gst.FlowReturn.OK
             else:

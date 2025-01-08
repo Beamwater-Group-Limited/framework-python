@@ -167,7 +167,7 @@
                         </span>
                     </td>
                     <td>
-                        <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="deleteVideo('${item.id}')">停止运行</a>
+                        <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="deleteGstreamer('${item.id}')">停止运行</a>
                     </td>
 `;
                 tbody.appendChild(row);
@@ -182,10 +182,10 @@
 </script>
 {# 停止运行 #}
 <script>
-    async function deleteVideo(videoId) {
+    async function deleteGstreamer(videoId) {
         try {
             const response = await fetch(`
-            http://192.168.0.70:28481/v1/delInputCameraController?id=${videoId}`);
+            http://192.168.0.70:28481/v1/pauseGstreamerController?id=${videoId}`);
 
             if (response.ok) {
                 // Refresh the video list after successful deletion
