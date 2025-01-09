@@ -74,6 +74,36 @@
             </div>
         </div>
 
+        <!-- 修改 Modal -->
+        <div class="modal" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addModalLabel">修改挂载流程</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editVideoForm">
+
+                            <div class="mb-3">
+                                <label for="gstreamerId" class="form-label">编号</label>
+                                <input type="text" class="form-control" id="editGstreamerId" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="videoCodec" class="form-label">流程挂载</label>
+                                <select class="form-select" id="editGstreamerProcess" required>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="editGstreamerProcessMount()">确认修改</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- 列表 -->
         <table class="table table-hover">
             <thead class="table-dark">
@@ -106,13 +136,13 @@
     async function addGstreamer() {
         const camera_id = document.getElementById('videoStream').value;
         const ts_url = document.getElementById('streamingUrl').value;
-        {#const videoCodec = document.getElementById('largeModelProcess').value;#}
+        const largeModelProcess = document.getElementById('largeModelProcess').value;
         {#const isActive = document.getElementById('isActive').checked;#}
 
         const newVideo = {
             camera_id: camera_id,
             ts_url: ts_url,
-            process_mount: '',
+            process_mount: largeModelProcess,
         };
 
         try {
@@ -152,7 +182,23 @@
             tbody.innerHTML = '';
 
             // Populate the table rows
-            videoList.forEach(item => {
+            for (const item of videoList) {
+                let flow_name = ""
+                if (item.process_mount !== "") {
+                    // 获取流程真实的名称
+                    const flow_response = await fetch('http://192.168.0.70:28481/v1/get_flow_by_id', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            flow_id: item.process_mount
+                        })
+                    })
+                    const data = await flow_response.json(); // Parse the JSON response
+                    const flow_content = data["data"]
+                    flow_name = flow_content.data.flow_name
+                }
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${item.id}</td>
@@ -160,18 +206,19 @@
                     <td>${item.rtsp_url}</td>
                     <td>${item.encode}</td>
                     <td>${item.ts_url}</td>
-                    <td>${item.process_mount}</td>
+                    <td>${flow_name}</td>
                     <td>
                         <span class="badge bg-success">
                             正在运行
                         </span>
                     </td>
                     <td>
+                        <a href="javascript:void(0)" class="btn btn-warning btn-sm action-btn" onclick="openEditModal('${item.id}', '${item.process_mount}')">修改流程挂载</a>
                         <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="deleteGstreamer('${item.id}')">停止运行</a>
                     </td>
 `;
                 tbody.appendChild(row);
-            });
+            }
         } catch (error) {
             console.error('Error fetching video data:', error);
         }
@@ -224,5 +271,102 @@
     document.getElementById('addModal').addEventListener('shown.bs.modal', () => {
         populateVideoStreamOptions();
     });
+</script>
+{# 获取所有流程数据 #}
+<script>
+    async function populateLargeModelProcessOptions() {
+        try {
+            const response = await fetch('http://192.168.0.70:28481/v1/get_all_flow', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json(); // Parse the JSON response
+            const videoList = data["data"]
+
+            const largeModelProcessStreamSelect = document.getElementById('largeModelProcess');
+
+            largeModelProcessStreamSelect.innerHTML = ''; // Clear existing options
+            videoList.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.data.flow_name;
+                largeModelProcessStreamSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error fetching video streams:', error);
+        }
+    }
+
+    document.getElementById('addModal').addEventListener('shown.bs.modal', () => {
+        populateLargeModelProcessOptions();
+    });
+</script>
+{# 修改处理 #}
+<script>
+    // Function to open the modal
+    async function openEditModal(id, process_mount) {
+        document.getElementById('editGstreamerId').value = id;
+
+        const response = await fetch('http://192.168.0.70:28481/v1/get_all_flow', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json(); // Parse the JSON response
+        const videoList = data["data"]
+
+        const largeModelProcessStreamSelect = document.getElementById('editGstreamerProcess');
+
+        largeModelProcessStreamSelect.innerHTML = ''; // Clear existing options
+        videoList.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.id;
+            option.textContent = item.data.flow_name;
+            if (item.id === process_mount) { // Set the default value based on the passed id
+                option.selected = true;
+            }
+            largeModelProcessStreamSelect.appendChild(option);
+        });
+
+        const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+        editModal.show();
+    }
+
+    // Function to add a new video
+    async function editGstreamerProcessMount() {
+        const gstreamer_id = document.getElementById('editGstreamerId').value
+        const process_mount = document.getElementById('editGstreamerProcess').value
+
+        const editGstreamer = {
+            gstreamer_id: gstreamer_id,
+            process_mount: process_mount
+        };
+
+        try {
+            const response = await fetch('http://192.168.0.70:28481/v1/updateGstreamerProcessMountController', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(editGstreamer)
+            });
+
+            if (response.ok) {
+                // Reload data after successfully adding a video
+                fetchVideoData();
+                const editModal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
+                editModal.hide();
+            } else {
+                console.error('Error edit video:', await response.text());
+            }
+        } catch (error) {
+            console.error('Error edit video:', error);
+        }
+    }
 </script>
 </html>

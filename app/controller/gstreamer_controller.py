@@ -18,11 +18,14 @@ logger = logging.getLogger(config.app_name)
 gstreamerManager = GstreamerManager()
 
 from gi.repository import Gst, GObject, GLib
+
 Gst.init(None)
+
 
 class GstreamerController:
     def __init__(self):
         pass
+
 
 # 获取gstreamer流运行
 class GetAllGstreamerController(GstreamerController):
@@ -86,7 +89,8 @@ class AddGstreamerController(GstreamerController):
 
                 gstreamerManager.start_new_gstreamer(gstreamerConfig.all_to_dict())
 
-                ConfigService().add_input_camera_data(gstreamer_run_yaml_path, gstreamerConfig.id, gstreamerConfig.to_dict())
+                ConfigService().add_input_camera_data(gstreamer_run_yaml_path, gstreamerConfig.id,
+                                                      gstreamerConfig.to_dict())
 
                 resp.body = json.dumps(ResponEntity().ok(
                     "添加视频流运行成功",
@@ -119,4 +123,41 @@ class PauseGstreamerController(GstreamerController):
         except Exception as e:
             logger.error("暂停运行的流失败", e)
             resp.body = json.dumps(ResponEntity().exception("暂停运行的流失败", e))
+            resp.status = falcon.HTTP_500
+
+
+# 修改运行的流挂载的流程
+class UpdateGstreamerProcessMountController(GstreamerController):
+    async def on_post(self, req, resp):
+        try:
+            gstreamer_run_yaml_path = "/home/ya/mapdata/gstreamer_run.yaml"
+            media = await req.get_media()
+            gstreamer_id = media["gstreamer_id"]
+            process_mount = media["process_mount"]
+            # 根据id获取流的信息
+            with open(gstreamer_run_yaml_path, 'r') as file:
+                existing_data = yaml.safe_load(file)
+                # 遍历字典
+                gstreamer_info = existing_data[gstreamer_id]
+            gstreamer_config = GstreamerConfig()
+            gstreamer_config.id = gstreamer_id
+            gstreamer_config.ts_url = gstreamer_info["ts_url"]
+            gstreamer_config.process_mount = process_mount
+            gstreamer_config.rtsp_url = gstreamer_info["rtsp_url"]
+            gstreamer_config.camera_name = gstreamer_info["camera_name"]
+            gstreamer_config.encode = gstreamer_info["encode"]
+            gstreamer_config.is_work = gstreamer_info["is_work"]
+
+            # 将运行流的信息信息添加到yaml文件中
+            ConfigService().update_input_camera_data(gstreamer_run_yaml_path, gstreamer_config.id,
+                                                     gstreamer_config.to_dict())
+
+            resp.body = json.dumps(ResponEntity().ok(
+                "修改运行的流挂载的流程成功",
+                "success"
+            ))
+            resp.status = falcon.HTTP_200
+        except Exception as e:
+            logger.error("修改运行的流挂载的流程失败", e)
+            resp.body = json.dumps(ResponEntity().exception("修改运行的流挂载的流程失败", e))
             resp.status = falcon.HTTP_500

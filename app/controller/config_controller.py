@@ -48,8 +48,9 @@ class GetAllFunctionController(ConfigController):
 class SaveFlowController(ConfigController):
     async def on_post(self, req, resp):
         try:
-            all_function = req.media["all_function"]
-            flow_name = req.media["flow_name"]
+            media = await req.get_media()
+            all_function = media["all_function"]
+            flow_name = media["flow_name"]
 
             yaml_id = str(uuid.uuid4())
 
@@ -108,11 +109,13 @@ class GetAllFlowController(ConfigController):
 class GetFlowByIdController(ConfigController):
     async def on_post(self, req, resp):
         try:
-            flow_id = req.media["flow_id"]
+            media = await req.get_media()
+            flow_id = media["flow_id"]
             yaml_path = f"/home/ya/mapdata/flow/{flow_id}.yaml"
 
             with open(yaml_path, 'r') as file:
                 existing_data = yaml.safe_load(file)
+                print(existing_data)
 
             resp.body = json.dumps(ResponEntity().ok(
                 "根据流程id获取流程成功",
@@ -132,7 +135,8 @@ class GetFlowByIdController(ConfigController):
 class SaveImgDataController(ConfigController):
     async def on_post(self, req, resp):
         try:
-            file = req.media["file"]
+            media = await req.get_media()
+            file = media["file"]
             if file is None:
                 raise ValueError("未找到上传文件")
 
@@ -162,7 +166,8 @@ class SaveImgDataController(ConfigController):
 class ComponentToFlowController(ConfigController):
     async def on_post(self, req, resp):
         try:
-            save_data = req.media["data"]
+            media = await req.get_media()
+            save_data = media["data"]
             yaml_file = "/home/ya/mapdata/component_to_flow.yaml"
 
             # 从文件加载现有数据

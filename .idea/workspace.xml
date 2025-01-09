@@ -4,11 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="add gstreamer config">
+    <list default="true" id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="update gstreamer config">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controller/config_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/config_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controller/gstreamer_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/gstreamer_controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/service/gstreamer_pieline_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/gstreamer_pieline_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/service/gstreamer_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/gstreamer_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gunicorn_conf.py" beforeDir="false" afterPath="$PROJECT_DIR$/gunicorn_conf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/service/prefect_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/prefect_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/wsgi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mapdata/templates/gstreamer_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/mapdata/templates/gstreamer_config.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -129,7 +131,8 @@
       <workItem from="1736228301956" duration="20693000" />
       <workItem from="1736249057448" duration="166000" />
       <workItem from="1736249245388" duration="2242000" />
-      <workItem from="1736300565181" duration="502000" />
+      <workItem from="1736300565181" duration="3975000" />
+      <workItem from="1736304672752" duration="4379000" />
     </task>
     <task id="LOCAL-00001" summary="push structure code">
       <created>1734504859284</created>
@@ -260,7 +263,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736249623328</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="update gstreamer config">
+      <option name="closed" value="true" />
+      <created>1736302063841</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1736302063841</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -305,6 +316,7 @@
     <MESSAGE value="add files" />
     <MESSAGE value="add video config" />
     <MESSAGE value="add gstreamer config" />
-    <option name="LAST_COMMIT_MESSAGE" value="add gstreamer config" />
+    <MESSAGE value="update gstreamer config" />
+    <option name="LAST_COMMIT_MESSAGE" value="update gstreamer config" />
   </component>
 </project>

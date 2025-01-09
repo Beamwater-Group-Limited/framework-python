@@ -1,6 +1,10 @@
-
-from gi.repository import Gst, GObject, GLib
+from gi.repository import Gst, GLib
 Gst.init(None)
+import cv2
+import threading
+from app.service.prefect_service import PrefectRun
+from app.untils.frame_deal import get_rgb_frame
+import base64
 import os
 import yaml
 gstreamer_run_yaml_path = "/home/ya/mapdata/gstreamer_run.yaml"
@@ -19,6 +23,8 @@ class GstreamerPiePline:
         self.process_mount = gstreamer_config['process_mount']
         # 默认第一个列表
         self.loop = GLib.MainLoop()
+        # 判断是否在识别
+        self.is_detect = False
 
         # 定义gstreamer命令
         self.gstreamer_command = f'''
@@ -53,10 +59,30 @@ class GstreamerPiePline:
                 buf = sample.get_buffer()
                 data = buf.extract_dup(0, buf.get_size())
 
-                # if (self.process_mount is None) or (self.process_mount == "") or (
-                #         not os.path.exists(self.process_mount)):
-                #     p = 1
-                #     # print("当前的流没有挂载")
+                flow_yaml_path = f"/home/ya/mapdata/flow/{self.process_mount}.yaml"
+                if os.path.exists(flow_yaml_path):
+                    if not self.is_detect:
+                        '''
+                        非阻塞运行
+                        '''
+                        def save_img_detect():
+                            self.is_detect = True
+                            # 获取图像Base64字符串
+                            rgb_frame = get_rgb_frame(sample)
+                            if rgb_frame is not None:
+                                _, buffer = cv2.imencode('.jpg', rgb_frame)
+                                rgb_frame_base64 = base64.b64encode(buffer).decode('utf-8')
+                                input_data = {
+                                    "image_data": rgb_frame_base64,
+                                    "text": "画面中有什么"
+                                }
+                                # 定义访问的参数
+                                flow_back = PrefectRun(flow_yaml_path, input_data)
+                                print(flow_back)
+                            self.is_detect = False
+
+                        thread = threading.Thread(target=save_img_detect)
+                        thread.start()
 
                 return Gst.FlowReturn.OK
             else:
@@ -81,3 +107,6 @@ class GstreamerPiePline:
                     self.pipeline.set_state(Gst.State.NULL)
                 if self.loop:
                     self.loop.quit()
+            else:
+                gstreamer_info = existing_data[self.gstreamer_config['id']]
+                self.process_mount = gstreamer_info['process_mount']

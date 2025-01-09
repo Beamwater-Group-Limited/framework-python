@@ -10,6 +10,9 @@ import yaml
 # 动态生成多个任务
 from prefect import flow
 
+from app.entity.output_data import OutputData
+from app.entity.task_node import TaskNode
+
 
 class PrefectService:
     def __init__(self, flow_name: str, **kwargs) -> None:
@@ -37,3 +40,23 @@ class PrefectDealService:
             existing_data = yaml.safe_load(file)
         return existing_data
 
+"""
+动态生成Prefect并调用
+"""
+def PrefectRun(yaml_path, input_data):
+    # 根据流程ID 获取流程和任务参数
+    yaml_data = PrefectDealService().parse_flow_yaml(yaml_path=yaml_path)
+    # 解析yaml流程文件，并将所有的过程放进去
+    prefect = PrefectService(
+        yaml_data["flow_name"],
+        **input_data
+    )
+
+    all_function = yaml_data["all_function"]
+    for function in all_function:
+        task = TaskNode(function["function_name"], function["http_url"], function["parameters"], None, None)
+        prefect.append_task(task)
+
+    back = prefect.run()
+
+    return back
