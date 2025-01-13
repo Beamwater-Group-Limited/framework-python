@@ -1,6 +1,7 @@
 # !/usr/bin/env/python
 
 from gi.repository import Gst, GObject, GLib
+
 Gst.init(None)
 import logging
 
@@ -15,7 +16,7 @@ from app.controller.config_controller import GetAllFunctionController, SaveFlowC
 from app.controller.gstreamer_controller import GetAllGstreamerController, AddGstreamerController, \
     PauseGstreamerController, UpdateGstreamerProcessMountController, SendVoiceController
 from app.controller.home_resource import VideoMonitoringPage, ConfigPageTemplate, VideoPageUse, VideoConfig, \
-    GstreamerConfig
+    FlowRunConfig
 from app.controller.prefect_controller import TestRunFlowController, RunFlowController, \
     ImageProcessingFlowRunController, ChatVoiceFlowRunController, GlobalSearchFlowRunController
 from falcon.asgi import App
@@ -30,9 +31,7 @@ sys.path.append(rootPath)
 from falcon_cors import CORS
 from app.controller.helloworld_controller import HelloWorldController
 
-
 sys.path.insert(0, './app')
-
 
 logger = logging.getLogger(config.app_name)
 # 配置日志模块的信息标准【什么等级的信息会被捕捉】
@@ -133,23 +132,24 @@ def create_app():
 
     return api
 
-def rander_page(api:App)-> 'App':
+
+def rander_page(api: App) -> 'App':
     # 创建 HomeResource 的实例，用于处理主页的相关请求
     video_monitoring_page = VideoMonitoringPage()
     config_page_template = ConfigPageTemplate()
     video_page_use = VideoPageUse()
     videoConfig = VideoConfig()
-    gstreamerConfig = GstreamerConfig()
+    flowRunConfig = FlowRunConfig()
     # 添加静态文件中间件
     api.add_static_route('/static', config.basepath / 'static')
     api.add_route('/video_monitoring_page', video_monitoring_page)
     api.add_route('/config_page_template', config_page_template)
     api.add_route('/video_page_use', video_page_use)
     api.add_route('/videoConfig', videoConfig)
-    api.add_route('/gstreamerConfig', gstreamerConfig)
-
+    api.add_route('/flowRunConfig', flowRunConfig)
 
     return api
+
 
 # 调用方法创建应用实例，赋值给变量 app
 app = rander_page(create_app())

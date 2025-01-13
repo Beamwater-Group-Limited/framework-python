@@ -4,16 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="update gstreamer config">
+    <list default="true" id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="update page">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controller/gstreamer_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/gstreamer_controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/controller/home_resource.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/home_resource.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controller/prefect_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/prefect_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/service/gstreamer_pieline_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/gstreamer_pieline_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/service/prefect_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/prefect_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/untils/frame_deal.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/untils/frame_deal.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/wsgi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mapdata/templates/video_monitoring_page_template_styles.html" beforeDir="false" afterPath="$PROJECT_DIR$/mapdata/templates/video_monitoring_page_template_styles.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mapdata/templates/gstreamer_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/mapdata/templates/flow_run_config.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +61,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "WebServerToolWindowFactoryState": "true",
     "git-widget-placeholder": "amd",
-    "last_opened_file_path": "/Users/cbtai/PycharmProjects/framework-python/app/service",
+    "last_opened_file_path": "/Users/cbtai/PycharmProjects/framework-python/gstreamer-test1",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -78,8 +73,8 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/app/service" />
       <recent name="$PROJECT_DIR$/gstreamer-test1" />
+      <recent name="$PROJECT_DIR$/app/service" />
       <recent name="$PROJECT_DIR$/app/controller" />
       <recent name="$PROJECT_DIR$/app/entity" />
       <recent name="$PROJECT_DIR$/mapdata/templates" />
@@ -135,7 +130,7 @@
       <workItem from="1736249245388" duration="2242000" />
       <workItem from="1736300565181" duration="3975000" />
       <workItem from="1736304672752" duration="8951000" />
-      <workItem from="1736394752812" duration="35499000" />
+      <workItem from="1736394752812" duration="41915000" />
     </task>
     <task id="LOCAL-00001" summary="push structure code">
       <created>1734504859284</created>
@@ -282,7 +277,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736388854562</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="update page">
+      <option name="closed" value="true" />
+      <created>1736744655269</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1736744655269</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -328,6 +331,7 @@
     <MESSAGE value="add video config" />
     <MESSAGE value="add gstreamer config" />
     <MESSAGE value="update gstreamer config" />
-    <option name="LAST_COMMIT_MESSAGE" value="update gstreamer config" />
+    <MESSAGE value="update page" />
+    <option name="LAST_COMMIT_MESSAGE" value="update page" />
   </component>
 </project>

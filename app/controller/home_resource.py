@@ -62,9 +62,9 @@ class VideoConfig(BasePage):
 
 
 # Gstreamer流运行配置页面
-class GstreamerConfig(BasePage):
+class FlowRunConfig(BasePage):
     def __init__(self):
-        super().__init__('gstreamer_config.html')
+        super().__init__('flow_run_config.html')
 
 
 class ProductPage(BasePage):
