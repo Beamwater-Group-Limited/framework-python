@@ -23,8 +23,9 @@ class PrefectController:
 class TestRunFlowController(PrefectController):
     async def on_post(self, req, resp):
         try:
-            flow_id = req.media["id"]
-            data = req.media["data"]
+            media = await req.get_media()
+            flow_id = media["id"]
+            data = media["data"]
             all_function = data["all_function"]
             flow_name = data["flow_name"]
 
@@ -56,11 +57,12 @@ class TestRunFlowController(PrefectController):
 class RunFlowController(PrefectController):
     async def on_post(self, req, resp):
         try:
-            flow_id = req.media["id"]
-            data = req.media["data"]
+            media = await req.get_media()
+            flow_id = media["id"]
+            data = media["data"]
             all_function = data["all_function"]
             flow_name = data["flow_name"]
-            image_data = req.media["image_data"]
+            image_data = media["image_data"]
 
             prefect = PrefectService(
                 flow_name,
@@ -91,10 +93,11 @@ class ImageProcessingFlowRunController(PrefectController):
     async def on_post(self, req, resp):
         try:
             # 统一接口参数
-            input_type = req.media["input_type"]
-            input_data = req.media["input_data"]
-            output_type = req.media["output_type"]
-            flow_id = req.media["flow_id"]
+            media = await req.get_media()
+            input_type = media["input_type"]
+            input_data = media["input_data"]
+            output_type = media["output_type"]
+            flow_id = media["flow_id"]
 
             # 根据流程ID 获取流程和任务参数
             yaml_path = f"/home/ya/mapdata/flow/{flow_id}.yaml"
@@ -139,10 +142,11 @@ class ChatVoiceFlowRunController(PrefectController):
     async def on_post(self, req, resp):
         try:
             # 统一接口参数
-            input_type = req.media["input_type"]
-            input_data = req.media["input_data"]
-            output_type = req.media["output_type"]
-            flow_id = req.media["flow_id"]
+            media = await req.get_media()
+            input_type = media["input_type"]
+            input_data = media["input_data"]
+            output_type = media["output_type"]
+            flow_id = media["flow_id"]
 
             # 根据流程ID 获取流程和任务参数
             yaml_path = f"/home/ya/mapdata/flow/{flow_id}.yaml"
@@ -187,10 +191,11 @@ class GlobalSearchFlowRunController(PrefectController):
     async def on_post(self, req, resp):
         try:
             # 统一接口参数
-            input_type = req.media["input_type"]
-            input_data = req.media["input_data"]
-            output_type = req.media["output_type"]
-            flow_id = req.media["flow_id"]
+            media = await req.get_media()
+            input_type = media["input_type"]
+            input_data = media["input_data"]
+            output_type = media["output_type"]
+            flow_id = media["flow_id"]
 
             # # 根据流程ID 获取流程和任务参数
             # yaml_path = f"/home/ya/mapdata/flow/{flow_id}.yaml"

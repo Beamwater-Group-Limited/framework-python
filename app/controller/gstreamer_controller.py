@@ -10,6 +10,7 @@ from app import config
 from app.entity.gstreamer_config import GstreamerConfig
 from app.entity.respon_entity import ResponEntity
 from app.service.config_service import ConfigService
+from app.service.gstreamer_send_voice import play_once
 from app.service.gstreamer_service import GstreamerManager
 
 logger = logging.getLogger(config.app_name)
@@ -160,4 +161,22 @@ class UpdateGstreamerProcessMountController(GstreamerController):
         except Exception as e:
             logger.error("修改运行的流挂载的流程失败", e)
             resp.body = json.dumps(ResponEntity().exception("修改运行的流挂载的流程失败", e))
+            resp.status = falcon.HTTP_500
+
+
+# 通过gstreamer播放声音
+class SendVoiceController(GstreamerController):
+    async def on_post(self, req, resp):
+        try:
+            media = await req.get_media()
+            text = media["text"]
+            play_once(text)
+            resp.body = json.dumps(ResponEntity().ok(
+                "通过gstreamer播放声音成功",
+                "success"
+            ))
+            resp.status = falcon.HTTP_200
+        except Exception as e:
+            logger.error("通过gstreamer播放声音失败", e)
+            resp.body = json.dumps(ResponEntity().exception("通过gstreamer播放声音失败", e))
             resp.status = falcon.HTTP_500

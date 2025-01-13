@@ -14,6 +14,10 @@ def get_rgb_frame(sample):
     width = sample.get_caps().get_structure(0).get_value("width")
     format = sample.get_caps().get_structure(0).get_value("format")
 
+    print("------------------------------------")
+    print(f"图像格式为： {format}")
+    print("------------------------------------")
+
     if format == "I420":  # YUV I420
         y_size = width * height
         u_size = (width // 2) * (height // 2)
@@ -31,8 +35,9 @@ def get_rgb_frame(sample):
         u_upsampled = cv2.resize(u, (width, height), interpolation=cv2.INTER_LINEAR)
         v_upsampled = cv2.resize(v, (width, height), interpolation=cv2.INTER_LINEAR)
 
-        # 转换为 RGB
-        rgb_image = cv2.cvtColor(cv2.merge([y, u_upsampled, v_upsampled]), cv2.COLOR_YUV2RGB)
+        # 注意通道顺序：可能需要交换 U 和 V
+        yuv = cv2.merge([y, v_upsampled, u_upsampled])  # 交换 U 和 V
+        rgb_image = cv2.cvtColor(yuv, cv2.COLOR_YUV2RGB)
 
     elif format == "BGR":  # BGR 格式
         rgb_image = cv2.cvtColor(np.frombuffer(data, np.uint8).reshape((height, width, 3)),

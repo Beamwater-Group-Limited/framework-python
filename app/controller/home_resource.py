@@ -52,7 +52,7 @@ class ConfigPageTemplate(BasePage):
 # 摄像头使用页面
 class VideoPageUse(BasePage):
     def __init__(self):
-        super().__init__('video_monitoring_page_template_styles.html', stream='rtsp://192.168.0.70:8554/mainstream')
+        super().__init__('video_monitoring_page_template_styles.html', stream='rtsp://192.168.0.70:8554/kaifaban')
 
 
 # 摄像头配置页面

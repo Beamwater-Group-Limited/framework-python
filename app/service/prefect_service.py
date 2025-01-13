@@ -10,7 +10,6 @@ import yaml
 # 动态生成多个任务
 from prefect import flow
 
-from app.entity.output_data import OutputData
 from app.entity.task_node import TaskNode
 
 

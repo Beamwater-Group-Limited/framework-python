@@ -6,12 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="update gstreamer config">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controller/config_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/config_controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/controller/gstreamer_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/gstreamer_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controller/home_resource.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/home_resource.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controller/prefect_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/prefect_controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/service/gstreamer_pieline_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/gstreamer_pieline_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/service/prefect_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/prefect_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/untils/frame_deal.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/untils/frame_deal.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/wsgi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mapdata/templates/gstreamer_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/mapdata/templates/gstreamer_config.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mapdata/templates/video_monitoring_page_template_styles.html" beforeDir="false" afterPath="$PROJECT_DIR$/mapdata/templates/video_monitoring_page_template_styles.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,30 +59,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;JavaScript Debug.video_config.html.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;amd&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/cbtai/PycharmProjects/framework-python/app/service&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.language.and.region&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JavaScript Debug.video_config.html.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "WebServerToolWindowFactoryState": "true",
+    "git-widget-placeholder": "amd",
+    "last_opened_file_path": "/Users/cbtai/PycharmProjects/framework-python/app/service",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.language.and.region",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/app/service" />
+      <recent name="$PROJECT_DIR$/gstreamer-test1" />
       <recent name="$PROJECT_DIR$/app/controller" />
       <recent name="$PROJECT_DIR$/app/entity" />
       <recent name="$PROJECT_DIR$/mapdata/templates" />
-      <recent name="$PROJECT_DIR$/mapdata/static/js" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/mapdata/templates" />
@@ -132,7 +134,8 @@
       <workItem from="1736249057448" duration="166000" />
       <workItem from="1736249245388" duration="2242000" />
       <workItem from="1736300565181" duration="3975000" />
-      <workItem from="1736304672752" duration="4379000" />
+      <workItem from="1736304672752" duration="8951000" />
+      <workItem from="1736394752812" duration="35499000" />
     </task>
     <task id="LOCAL-00001" summary="push structure code">
       <created>1734504859284</created>
@@ -271,7 +274,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736302063841</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="update gstreamer config">
+      <option name="closed" value="true" />
+      <created>1736388854562</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1736388854562</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

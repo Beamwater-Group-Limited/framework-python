@@ -13,7 +13,7 @@ from app import config
 from app.controller.config_controller import GetAllFunctionController, SaveFlowController, GetAllFlowController, \
     GetFlowByIdController, SaveImgDataController, ComponentToFlowController, GetComponentToFlowListController
 from app.controller.gstreamer_controller import GetAllGstreamerController, AddGstreamerController, \
-    PauseGstreamerController, UpdateGstreamerProcessMountController
+    PauseGstreamerController, UpdateGstreamerProcessMountController, SendVoiceController
 from app.controller.home_resource import VideoMonitoringPage, ConfigPageTemplate, VideoPageUse, VideoConfig, \
     GstreamerConfig
 from app.controller.prefect_controller import TestRunFlowController, RunFlowController, \
@@ -63,6 +63,7 @@ def create_app():
     addGstreamerController = AddGstreamerController()
     pauseGstreamerController = PauseGstreamerController()
     updateGstreamerProcessMountController = UpdateGstreamerProcessMountController()
+    sendVoiceController = SendVoiceController()
 
     cors = CORS(
         allow_origins_list=['http://localhost:8080', 'http://localhost:8082'],
@@ -127,7 +128,8 @@ def create_app():
     api.add_route('/v1/pauseGstreamerController', pauseGstreamerController)
     # 修改运行的流挂载的流程
     api.add_route('/v1/updateGstreamerProcessMountController', updateGstreamerProcessMountController)
-
+    # 通过gstreamer播放声音
+    api.add_route('/v1/sendVoiceController', sendVoiceController)
 
     return api
 
