@@ -1,5 +1,7 @@
+import base64
 import logging
 import os
+import shutil
 import uuid
 
 import falcon
@@ -8,6 +10,7 @@ import yaml
 
 from app import config
 from app.entity.gstreamer_config import GstreamerConfig
+from app.entity.gstreamer_piepline_config import GstreamerPiePlineConfig
 from app.entity.respon_entity import ResponEntity
 from app.service.config_service import ConfigService
 from app.service.gstreamer_send_voice import play_once
@@ -18,7 +21,7 @@ logger = logging.getLogger(config.app_name)
 # 设置全局的gstreamer管理功能
 gstreamerManager = GstreamerManager()
 
-from gi.repository import Gst, GObject, GLib
+from gi.repository import Gst
 
 Gst.init(None)
 
@@ -179,4 +182,127 @@ class SendVoiceController(GstreamerController):
         except Exception as e:
             logger.error("通过gstreamer播放声音失败", e)
             resp.body = json.dumps(ResponEntity().exception("通过gstreamer播放声音失败", e))
+            resp.status = falcon.HTTP_500
+
+
+# 新增gstreamer管道配置
+class AddGstreamerConfigController(GstreamerController):
+    async def on_post(self, req, resp):
+        try:
+            media = await req.get_media()
+            gsName = media["gstreamer_name"]
+            gsInputType = media["gstreamer_input_type"]
+            gsInputData = media["gstreamer_input_data"]
+            gsOutputType = media["gstreamer_output_type"]
+            gsOutputData = media["gstreamer_output_data"]
+
+            folder_id = str(uuid.uuid4())
+            # Ensure the directory exists
+            config_dir = f"/home/ya/mapdata/gstreamer-config/{folder_id}"
+            os.makedirs(config_dir, exist_ok=True)
+
+            # 判断gstreamer_input_type的类型，如果是img或video，需要将文件保存
+            if gsInputType == "Image":
+                image_data = base64.b64decode(gsInputData)
+                image_path = f"{config_dir}/image.png"
+                with open(image_path, "wb") as image_file:
+                    image_file.write(image_data)
+                gsInputData = image_path
+            elif gsInputType == "Video":
+                video_data = base64.b64decode(gsInputData)
+                video_path = f"{config_dir}/video.mp4"
+                with open(video_path, 'wb') as video_file:
+                    video_file.write(video_data)
+                gsInputData = video_path
+            elif gsInputType == "Stream":
+                print("stream input type")
+            # 添加配置文件
+            gstreamerPieplineConfig = GstreamerPiePlineConfig()
+            gstreamerPieplineConfig.id = folder_id
+            gstreamerPieplineConfig.gs_name = gsName
+            gstreamerPieplineConfig.input_type = gsInputType
+            gstreamerPieplineConfig.input_data = gsInputData
+            gstreamerPieplineConfig.output_type = gsOutputType
+            gstreamerPieplineConfig.output_data = gsOutputData
+
+            yaml_path = f"{config_dir}/config.yaml"
+
+            # 将摄像头信息添加到yaml文件中
+            with open(yaml_path, 'w', encoding="utf-8") as file:
+                # 将数据写入新文件
+                yaml.dump(gstreamerPieplineConfig.all_to_dict(), file)
+
+            resp.body = json.dumps(ResponEntity().ok(
+                "新增gstreamer管道配置成功",
+                "success"
+            ))
+            resp.status = falcon.HTTP_200
+        except Exception as e:
+            logger.error("新增gstreamer管道配置失败", e)
+            resp.body = json.dumps(ResponEntity().exception("新增gstreamer管道配置失败", e))
+            resp.status = falcon.HTTP_500
+
+
+# 获取管道配置数据
+class GetGstreamerPiePlineConfigController(GstreamerController):
+    async def on_get(self, req, resp):
+        try:
+            gstreamer_dir = "/home/ya/mapdata/gstreamer-config"
+            back = []
+            if os.path.exists(gstreamer_dir):
+                for f in os.listdir(gstreamer_dir):
+                    dir_path = os.path.join(gstreamer_dir, f)
+                    yaml_path = os.path.join(dir_path, "config.yaml")
+                    with open(yaml_path, 'r') as file:
+                        existing_data = yaml.safe_load(file) or {}
+                        # 遍历字典
+                        gs_piepline_config = GstreamerPiePlineConfig()
+                        gs_piepline_config.id = existing_data["id"]
+                        gs_piepline_config.gs_name = existing_data["gs_name"]
+                        if existing_data["input_type"] == "Image":
+                            gs_piepline_config.input_type = "图像"
+                        elif existing_data["input_type"] == "Video":
+                            gs_piepline_config.input_type = "视频"
+                        elif existing_data["input_type"] == "Stream":
+                            gs_piepline_config.input_type = "视频流"
+                        else:
+                            gs_piepline_config.input_type = "未知数据"
+                        if existing_data["output_type"] == "Audio":
+                            gs_piepline_config.output_type = "声音播放"
+                        else:
+                            gs_piepline_config.output_type = "视频流输出"
+
+                        gs_piepline_config.input_data = existing_data["input_data"]
+                        gs_piepline_config.output_data = existing_data["output_data"]
+
+                        back.append(gs_piepline_config.all_to_dict())
+
+            resp.body = json.dumps(ResponEntity().ok(
+                "获取摄像头数据成功",
+                back
+            ))
+            resp.status = falcon.HTTP_200
+        except Exception as e:
+            logger.error("获取摄像头数据失败", e)
+            resp.body = json.dumps(ResponEntity().exception("获取摄像头数据失败", e))
+            resp.status = falcon.HTTP_500
+
+
+# 删除管道配置数据
+class DelGstreamerPiePlineConfigController(GstreamerController):
+    async def on_get(self, req, resp):
+        try:
+            gstreamer_config_id = req.params["id"]
+            gstreamer_dir = f"/home/ya/mapdata/gstreamer-config/{gstreamer_config_id}"
+            if os.path.exists(gstreamer_dir):
+                shutil.rmtree(gstreamer_dir)
+
+            resp.body = json.dumps(ResponEntity().ok(
+                "删除管道配置数据成功",
+                "success"
+            ))
+            resp.status = falcon.HTTP_200
+        except Exception as e:
+            logger.error("删除管道配置数据失败", e)
+            resp.body = json.dumps(ResponEntity().exception("删除管道配置数据失败", e))
             resp.status = falcon.HTTP_500

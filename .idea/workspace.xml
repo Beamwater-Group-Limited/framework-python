@@ -4,11 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="update page">
+    <list default="true" id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="update flow_run_config.html">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controller/gstreamer_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/gstreamer_controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/controller/home_resource.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/home_resource.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controller/video_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/video_controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/wsgi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mapdata/templates/gstreamer_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/mapdata/templates/flow_run_config.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gstreamer-test1/interface_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/gstreamer-test1/interface_test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,30 +56,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "JavaScript Debug.video_config.html.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "WebServerToolWindowFactoryState": "true",
-    "git-widget-placeholder": "amd",
-    "last_opened_file_path": "/Users/cbtai/PycharmProjects/framework-python/gstreamer-test1",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.language.and.region",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JavaScript Debug.video_config.html.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;amd&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/cbtai/PycharmProjects/framework-python/app/entity&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.language.and.region&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/entity" />
+      <recent name="$PROJECT_DIR$/mapdata/templates" />
       <recent name="$PROJECT_DIR$/gstreamer-test1" />
       <recent name="$PROJECT_DIR$/app/service" />
       <recent name="$PROJECT_DIR$/app/controller" />
-      <recent name="$PROJECT_DIR$/app/entity" />
-      <recent name="$PROJECT_DIR$/mapdata/templates" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/mapdata/templates" />
@@ -130,7 +132,13 @@
       <workItem from="1736249245388" duration="2242000" />
       <workItem from="1736300565181" duration="3975000" />
       <workItem from="1736304672752" duration="8951000" />
-      <workItem from="1736394752812" duration="41915000" />
+      <workItem from="1736394752812" duration="44064000" />
+      <workItem from="1736748786882" duration="117000" />
+      <workItem from="1736748914731" duration="4410000" />
+      <workItem from="1736753576545" duration="4669000" />
+      <workItem from="1736762426264" duration="3898000" />
+      <workItem from="1736817291709" duration="6556000" />
+      <workItem from="1736823876103" duration="243000" />
     </task>
     <task id="LOCAL-00001" summary="push structure code">
       <created>1734504859284</created>
@@ -285,7 +293,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736744655269</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="update flow_run_config.html">
+      <option name="closed" value="true" />
+      <created>1736746643066</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1736746643066</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -332,6 +348,7 @@
     <MESSAGE value="add gstreamer config" />
     <MESSAGE value="update gstreamer config" />
     <MESSAGE value="update page" />
-    <option name="LAST_COMMIT_MESSAGE" value="update page" />
+    <MESSAGE value="update flow_run_config.html" />
+    <option name="LAST_COMMIT_MESSAGE" value="update flow_run_config.html" />
   </component>
 </project>

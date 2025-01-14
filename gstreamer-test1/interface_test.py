@@ -433,7 +433,7 @@ def llava():
     ]
     comeEntity =  ComeEntity().setup(comes=comes,context=ContextEntity())
     # 定义请求的 URL
-    url = "http://192.168.0.70:28586/v1/process"  # 替换为目标 URL
+    url = "http://192.168.0.70:28286/v1/process"  # 替换为目标 URL
 
     # 定义 JSON 数据
     payload = comeEntity.obj2dct()
@@ -444,8 +444,8 @@ def llava():
     logger.debug(f'headers\n{headers}')
     response = requests.post(url, json=payload, headers=headers)
     print(response)
-    # hao_comeEntity = ComeEntity.as_ComeEntity(response.json())
-    # logger.debug(f'响应:{hao_comeEntity.obj2dct()}')
+    hao_comeEntity = ComeEntity.as_ComeEntity(response.json())
+    logger.debug(f'响应:{hao_comeEntity.obj2dct()}')
     return
 
 llava()

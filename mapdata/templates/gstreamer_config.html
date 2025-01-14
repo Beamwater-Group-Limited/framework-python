@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管道管理</title>
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../static/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/adapter.min.js"></script>
+    <script src="../static/js/webrtcstreamer.js"></script>
+    <style>
+        body {
+            font-size: 12px; /* 将字体设置为12号，可以更改为9-12之间的值 */
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .modal-body, .table-container {
+            font-size: 11px; /* 可调为9-12之间的值用于其他特定部分 */
+        }
+
+        .table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-add {
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            margin-right: 5px;
+        }
+                h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .video-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .video-player {
+            width: 30%;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .video-player video {
+            width: 100%;
+            height: auto;
+        }
+        .video-title {
+            padding: 10px;
+            font-weight: bold;
+            background-color: #f8f9fa;
+            border-top: 1px solid #ccc;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 class="text-center">GStreamer管道管理</h2>
+    <div class="table-container">
+        <!-- 新增按钮 -->
+        <div class="text-end">
+            <a href="javascript:void(0)" class="btn btn-primary btn-add" onclick="openAddModal()">新增</a>
+        </div>
+        <!-- 新增 Modal -->
+        <div class="modal" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addModalLabel">新增GStreamer管道</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addVideoForm">
+                            <div class="mb-3">
+                                <label for="videoName" class="form-label">管道名称</label>
+                                <input type="text" class="form-control" id="gsName" placeholder="请输入管道名称"
+                                       required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="videoUrl" class="form-label">管道输入</label>
+                                <div class="d-flex gap-3">
+                                    <div>
+                                        <input type="radio" class="form-check-input" name="gstreamerInput"
+                                               id="inputImage"
+                                               value="Image" required
+                                               onclick="toggleInputFields()">
+                                        <label class="form-check-label" for="inputImage">图像</label>
+                                    </div>
+                                    <div>
+                                        <input type="radio" class="form-check-input" name="gstreamerInput"
+                                               id="inputVideo"
+                                               value="Video" required
+                                               onclick="toggleInputFields()">
+                                        <label class="form-check-label" for="inputVideo">视频</label>
+                                    </div>
+                                    <div>
+                                        <input type="radio" class="form-check-input" name="gstreamerInput"
+                                               id="inputStream"
+                                               value="Stream" required
+                                               onclick="toggleInputFields()">
+                                        <label class="form-check-label" for="inputStream">视频流</label>
+                                    </div>
+                                </div>
+                                <div id="uploadField" class="mt-3" style="display: none;">
+                                    <label for="fileUpload" class="form-label">上传文件</label>
+                                    <input type="file" class="form-control" id="fileUpload">
+                                </div>
+                                <div id="textField" class="mt-3" style="display: none;">
+                                    <label for="streamInput" class="form-label">选择视频流地址</label>
+                                    <select class="form-select" id="videoStream" required>
+                                        <!-- Options will be populated dynamically from the API -->
+                                    </select>
+                                </div>
+                            </div>
+                            <script>
+                                async function toggleInputFields() {
+                                    const uploadField = document.getElementById('uploadField');
+                                    const textField = document.getElementById('textField');
+                                    const inputImage = document.getElementById('inputImage').checked;
+                                    const inputVideo = document.getElementById('inputVideo').checked;
+                                    const inputStream = document.getElementById('inputStream').checked;
+
+                                    if (inputImage || inputVideo) {
+                                        uploadField.style.display = 'block';
+                                        textField.style.display = 'none';
+                                    } else if (inputStream) {
+                                        try {
+                                            const response = await fetch('http://192.168.0.70:28481/v1/getInputCameraController'); // Replace with the correct API endpoint
+
+                                            const data = await response.json(); // Parse the JSON response
+                                            const videoList = data["data"]
+
+                                            const videoStreamSelect = document.getElementById('videoStream');
+
+                                            videoStreamSelect.innerHTML = ''; // Clear existing options
+                                            videoList.forEach(item => {
+                                                const option = document.createElement('option');
+                                                option.value = item.id;
+                                                option.textContent = item.camera_name + "---" + item.rtsp_url;
+                                                videoStreamSelect.appendChild(option);
+                                            });
+                                        } catch (error) {
+                                            console.error('Error fetching video streams:', error);
+                                        }
+                                        uploadField.style.display = 'none';
+                                        textField.style.display = 'block';
+                                    } else {
+                                        uploadField.style.display = 'none';
+                                        textField.style.display = 'none';
+                                    }
+                                }
+                            </script>
+                            <div class="mb-3">
+                                <label class="form-label">管道输出</label>
+                                <div class="d-flex gap-3">
+                                    <div>
+                                        <input type="radio" class="form-check-input" name="outputOption"
+                                               id="audioOutput" value="Audio" required onclick="toggleOutputField()">
+                                        <label class="form-check-label" for="audioOutput">声音播放</label>
+                                    </div>
+                                    <div>
+                                        <input type="radio" class="form-check-input" name="outputOption"
+                                               id="videoStreamOutput" value="VideoStream" required
+                                               onclick="toggleOutputField()">
+                                        <label class="form-check-label" for="videoStreamOutput">视频流输出</label>
+                                    </div>
+                                </div>
+                                <div id="outputTextField" class="mt-3" style="display: none;">
+                                    <label for="streamOutputInput" class="form-label">输出地址</label>
+                                    <input type="text" class="form-control" id="streamOutputInput"
+                                           placeholder="请输入视频流rtsp地址">
+                                </div>
+                            </div>
+                            <script>
+                                function toggleOutputField() {
+                                    const outputTextField = document.getElementById('outputTextField');
+                                    const videoStreamSelected = document.getElementById('videoStreamOutput').checked;
+
+                                    if (videoStreamSelected) {
+                                        outputTextField.style.display = 'block';
+                                    } else {
+                                        outputTextField.style.display = 'none';
+                                    }
+                                }
+                            </script>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="addGstreamer()">新增</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 修改 Modal -->
+        <div class="modal" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addModalLabel">修改视频</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editVideoForm">
+
+
+                            <div class="mb-3">
+                                <label for="videoId" class="form-label">编号</label>
+                                <input type="text" class="form-control" id="editVideoId" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="videoName" class="form-label">名称</label>
+                                <input type="text" class="form-control" id="editVideoName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="videoUrl" class="form-label">流地址</label>
+                                <input type="url" class="form-control" id="editVideoUrl" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="videoCodec" class="form-label">视频编码</label>
+                                <select class="form-select" id="editVideoCodec" required>
+                                    <option value="H264">H264</option>
+                                    <option value="H265">H265</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="editIsActive">
+                                <label class="form-check-label" for="isActive">是否启动</label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="editVideo()">确认修改</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 列表 -->
+        <table class="table table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>编号</th>
+                <th>名称</th>
+                <th>输入类型</th>
+                <th>输入数据</th>
+                <th>输出类型</th>
+                <th>输出数据</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="video-list">
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+{# 新增处理 #}
+<script>
+    // Function to open the modal
+    function openAddModal() {
+        const addModal = new bootstrap.Modal(document.getElementById('addModal'));
+        addModal.show();
+    }
+
+    // Function to add a new video
+    async function addGstreamer() {
+        const gsName = document.getElementById('gsName').value;
+        const gstreamerInput = document.querySelector('input[name="gstreamerInput"]:checked').value;
+        const outputOption = document.querySelector('input[name="outputOption"]:checked').value;
+
+        let gsInputData
+        let gsOutputData = ""
+        if (gstreamerInput === 'Image' || gstreamerInput === 'Video') {
+            // 得到文件的Base64字符串
+            gsInputData = await new Promise((resolve, reject) => {
+                const file = document.getElementById('fileUpload').files[0];
+                if (!file) {
+                    resolve(null);
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = (error) => reject(error);
+                reader.readAsDataURL(file);
+            });
+        } else {
+            gsInputData = document.getElementById('videoStream').value;
+        }
+
+        if (outputOption === 'VideoStream') {
+            gsOutputData = document.getElementById('streamOutputInput').value
+        }
+
+        const json_data = {
+            gstreamer_name: gsName,
+            gstreamer_input_type: gstreamerInput,
+            gstreamer_input_data: gsInputData,
+            gstreamer_output_type: outputOption,
+            gstreamer_output_data: gsOutputData,
+        }
+        console.log(json_data)
+
+        try {
+            const response = await fetch('http://192.168.0.70:28481/v1/addGstreamerConfigController', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(json_data)
+            });
+
+            if (response.ok) {
+                fetchVideoData();
+                const addModal = bootstrap.Modal.getInstance(document.getElementById('addModal'));
+                addModal.hide();
+                console.log('Video added successfully');
+            } else {
+                console.error('Error edit video:', await response.text());
+            }
+        } catch (error) {
+            console.error('Error edit video:', error);
+        }
+
+
+    }
+</script>
+{# 获取所有数据 #}
+<script>
+    // Fetch data from the API and populate the table
+    async function fetchVideoData() {
+        try {
+
+            const response = await fetch('http://192.168.0.70:28481/v1/getGstreamerPiePlineConfigController'); // Replace with your actual API endpoint
+            const data = await response.json(); // Parse the JSON response
+            const videoList = data["data"]
+
+            // Reference to the tbody element
+            const tbody = document.getElementById('video-list');
+            tbody.innerHTML = '';
+
+            // Populate the table rows
+            videoList.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.gs_name}</td>
+                    <td>${item.input_type}</td>
+                    <td>
+                        <a href="javascript:void(0)" onclick="viewData('${item.input_type}', '${item.input_data}')">
+                            ${item.input_type === '图像' ? '查看图像' : '查看视频'}
+                        </a>
+                    </td>
+                    <td>${item.output_type}</td>
+                    <td>${item.output_data}</td>
+                    <td>
+                        <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="deleteGstreamerPiepline('${item.id}')">删除</a>
+                    </td>
+`;
+                tbody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error fetching video data:', error);
+        }
+    }
+
+    // Call the function to load the data
+    fetchVideoData();
+</script>
+<script>
+    async function viewData(inputType, inputData) {
+        const modal = document.getElementById('dataModal');
+
+        const modalBodyContent = document.getElementById('modal-body-content');
+        if (inputType === '图像') {
+            const inputDataShow = inputData.replace('/home/ya/mapdata', 'http://192.168.0.70:11069');
+            modalBodyContent.innerHTML = `<img src="${inputDataShow}" alt="图像" class="img-fluid">`;
+        } else if (inputType === '视频') {
+            const inputDataShow = inputData.replace('/home/ya/mapdata', 'http://192.168.0.70:11069');
+            modalBodyContent.innerHTML = `
+                <video src="${inputDataShow}" controls class="img-fluid">
+                    浏览器不支持视频播放
+                </video>`;
+        } else if (inputType === '视频流') {
+
+            const response = await fetch('http://192.168.0.70:28481/v1/getSingleInputCameraController?id=' + inputData); // Replace with your actual API endpoint
+            const data = await response.json(); // Parse the JSON response
+            const inputCameraData = data.data
+            // 定义 stream 值为模板语言注入的变量
+            const stream = inputCameraData.rtsp_url
+            if (inputCameraData.encode === "H264") {
+
+                modalBodyContent.innerHTML = `
+                <h3>${inputCameraData.camera_name}</h3>
+                <div class="video-container">
+                    <div class="video-player">
+                        <video controls autoplay muted id="video">
+                            <source src="${stream}" type="application/x-mpegURL">
+                            您的浏览器不支持视频播放。
+                        </video>
+                        <div class="video-title">${stream}</div>
+                    </div>
+                </div>`;
+                let webRtcServer = null;
+                if (document.getElementById('video')) {
+                    console.log("没获取到")
+                    webRtcServer = new WebRtcStreamer("video", "http://192.168.0.70:8000");
+                    webRtcServer.connect(stream);
+                }
+
+                window.onbeforeunload = function () {
+                    if (webRtcServer) {
+                        webRtcServer.disconnect();
+                    }
+                };
+            } else {
+                modalBodyContent.innerHTML = `
+                <h1>${inputCameraData.camera_name}</h1>
+                <h2>${inputCameraData.rtsp_url}</h2>
+                <h3>非H264编码视频不支持在线查看</h3>`;
+            }
+
+        }
+
+        // Use Bootstrap to show the modal
+        const bootstrapModal = bootstrap.Modal.getOrCreateInstance(modal);
+        bootstrapModal.show();
+    }
+</script>
+
+<div id="dataModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">查看数据</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center" id="modal-body-content"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+{# 删除处理 #}
+<script>
+    async function deleteGstreamerPiepline(gsId) {
+        try {
+            const response = await fetch(`
+            http://192.168.0.70:28481/v1/delGstreamerPiePlineConfigController?id=${gsId}`);
+
+            if (response.ok) {
+                // Refresh the video list after successful deletion
+                fetchVideoData();
+            } else {
+                alert('删除失败，请重试!');
+            }
+        } catch (error) {
+            alert('网络错误，请稍后再试!');
+        }
+    }
+</script>
+{# 修改处理 #}
+<script>
+    // Function to open the modal
+    function openEditModal(id, camera_name, rtsp_url, encode, is_work) {
+        document.getElementById('editVideoId').value = id;
+        document.getElementById('editVideoName').value = camera_name;
+        document.getElementById('editVideoUrl').value = rtsp_url;
+        document.getElementById('editVideoCodec').value = encode;
+        document.getElementById('editIsActive').checked = is_work === 'true' || is_work === true;
+        const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+        editModal.show();
+    }
+
+    // Function to add a new video
+    async function editVideo() {
+        const id = document.getElementById('editVideoId').value
+        const camera_name = document.getElementById('editVideoName').value
+        const rtsp_url = document.getElementById('editVideoUrl').value
+        const encode = document.getElementById('editVideoCodec').value
+        const is_work = document.getElementById('editIsActive').checked
+
+        const editVideo = {
+            id: id,
+            rtsp_url: rtsp_url,
+            camera_name: camera_name,
+            encode: encode,
+            is_work: is_work
+        };
+
+        try {
+            const response = await fetch('http://192.168.0.70:28481/v1/updateInputCameraController', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(editVideo)
+            });
+
+            if (response.ok) {
+                // Reload data after successfully adding a video
+                fetchVideoData();
+                const editModal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
+                editModal.hide();
+            } else {
+                console.error('Error edit video:', await response.text());
+            }
+        } catch (error) {
+            console.error('Error edit video:', error);
+        }
+    }
+</script>
+</html>

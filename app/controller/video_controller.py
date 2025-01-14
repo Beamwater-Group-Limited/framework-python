@@ -127,3 +127,29 @@ class DelInputCameraController(VideoController):
             logger.error("删除摄像头数据失败", e)
             resp.body = json.dumps(ResponEntity().exception("删除摄像头数据失败", e))
             resp.status = falcon.HTTP_500
+
+# 获取单个摄像头数据
+class GetSingleInputCameraController(VideoController):
+    async def on_get(self, req, resp):
+        try:
+            camera_id = req.params["id"]
+            yaml_path = f"/home/ya/mapdata/video/{camera_id}.yaml"
+            camera = InputCamera()
+            with open(yaml_path, 'r') as file:
+                existing_data = yaml.safe_load(file) or {}
+                # 遍历字典
+                camera.id = existing_data["id"]
+                camera.rtsp_url = existing_data["rtsp_url"]
+                camera.camera_name = existing_data["camera_name"]
+                camera.encode = existing_data["encode"]
+                camera.is_work = existing_data["is_work"]
+
+            resp.body = json.dumps(ResponEntity().ok(
+                "获取单个摄像头数据成功",
+                camera.all_to_dict()
+            ))
+            resp.status = falcon.HTTP_200
+        except Exception as e:
+            logger.error("获取单个摄像头数据失败", e)
+            resp.body = json.dumps(ResponEntity().exception("获取单个摄像头数据失败", e))
+            resp.status = falcon.HTTP_500

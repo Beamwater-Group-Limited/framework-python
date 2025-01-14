@@ -14,15 +14,16 @@ from app import config
 from app.controller.config_controller import GetAllFunctionController, SaveFlowController, GetAllFlowController, \
     GetFlowByIdController, SaveImgDataController, ComponentToFlowController, GetComponentToFlowListController
 from app.controller.gstreamer_controller import GetAllGstreamerController, AddGstreamerController, \
-    PauseGstreamerController, UpdateGstreamerProcessMountController, SendVoiceController
+    PauseGstreamerController, UpdateGstreamerProcessMountController, SendVoiceController, AddGstreamerConfigController, \
+    GetGstreamerPiePlineConfigController, DelGstreamerPiePlineConfigController
 from app.controller.home_resource import VideoMonitoringPage, ConfigPageTemplate, VideoPageUse, VideoConfig, \
-    FlowRunConfig
+    FlowRunConfig, GstreamerConfig
 from app.controller.prefect_controller import TestRunFlowController, RunFlowController, \
     ImageProcessingFlowRunController, ChatVoiceFlowRunController, GlobalSearchFlowRunController
 from falcon.asgi import App
 
 from app.controller.video_controller import AddInputCameraController, GetInputCameraController, \
-    DelInputCameraController, UpdateInputCameraController
+    DelInputCameraController, UpdateInputCameraController, GetSingleInputCameraController
 
 current_dir = os.path.abspath(os.path.dirname(__file__))
 rootPath = os.path.split(current_dir)[0]
@@ -63,6 +64,10 @@ def create_app():
     pauseGstreamerController = PauseGstreamerController()
     updateGstreamerProcessMountController = UpdateGstreamerProcessMountController()
     sendVoiceController = SendVoiceController()
+    addGstreamerConfigController = AddGstreamerConfigController()
+    getGstreamerPiePlineConfigController = GetGstreamerPiePlineConfigController()
+    getSingleInputCameraController = GetSingleInputCameraController()
+    delGstreamerPiePlineConfigController = DelGstreamerPiePlineConfigController()
 
     cors = CORS(
         allow_origins_list=['http://localhost:8080', 'http://localhost:8082'],
@@ -116,6 +121,8 @@ def create_app():
     api.add_route('/v1/delInputCameraController', delInputCameraController)
     # 修改摄像头数据
     api.add_route('/v1/updateInputCameraController', updateInputCameraController)
+    # 获取单个摄像头数据
+    api.add_route('/v1/getSingleInputCameraController', getSingleInputCameraController)
     """
     gstreamer流运行管理
     """
@@ -129,6 +136,14 @@ def create_app():
     api.add_route('/v1/updateGstreamerProcessMountController', updateGstreamerProcessMountController)
     # 通过gstreamer播放声音
     api.add_route('/v1/sendVoiceController', sendVoiceController)
+    # 新增gstreamer管道配置
+    api.add_route('/v1/addGstreamerConfigController', addGstreamerConfigController)
+    # 获取gstreamer管道配置
+    api.add_route('/v1/getGstreamerPiePlineConfigController', getGstreamerPiePlineConfigController)
+    # 删除管道配置数据
+    api.add_route('/v1/delGstreamerPiePlineConfigController', delGstreamerPiePlineConfigController)
+
+
 
     return api
 
@@ -140,6 +155,7 @@ def rander_page(api: App) -> 'App':
     video_page_use = VideoPageUse()
     videoConfig = VideoConfig()
     flowRunConfig = FlowRunConfig()
+    gstreamerConfig = GstreamerConfig()
     # 添加静态文件中间件
     api.add_static_route('/static', config.basepath / 'static')
     api.add_route('/video_monitoring_page', video_monitoring_page)
@@ -147,6 +163,7 @@ def rander_page(api: App) -> 'App':
     api.add_route('/video_page_use', video_page_use)
     api.add_route('/videoConfig', videoConfig)
     api.add_route('/flowRunConfig', flowRunConfig)
+    api.add_route('/gstreamerConfig', gstreamerConfig)
 
     return api
 
