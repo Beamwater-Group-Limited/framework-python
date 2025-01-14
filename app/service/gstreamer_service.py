@@ -24,8 +24,8 @@ class GstreamerManager:
         self.gstreamer_piepline = []
 
     # 开启一个gstreamer
-    def start_new_gstreamer(self, gstreamer_config):
-        gstreamer = GstreamerPiePline(gstreamer_config)
+    def start_new_gstreamer(self, gstreamer_config, camera_data):
+        gstreamer = GstreamerPiePline(gstreamer_config, camera_data)
         process = multiprocessing.Process(target=gstreamer.start)
         process.daemon = True  # 设置为守护进程
         process.start()

@@ -11,6 +11,7 @@ import yaml
 from app import config
 from app.entity.gstreamer_config import GstreamerConfig
 from app.entity.gstreamer_piepline_config import GstreamerPiePlineConfig
+from app.entity.input_camera import InputCamera
 from app.entity.respon_entity import ResponEntity
 from app.service.config_service import ConfigService
 from app.service.gstreamer_send_voice import play_once
@@ -46,12 +47,12 @@ class GetAllGstreamerController(GstreamerController):
                     for gstreamer_id, gstreamer_info in existing_data.items():
                         gstreamer_config = GstreamerConfig()
                         gstreamer_config.id = gstreamer_id
-                        gstreamer_config.ts_url = gstreamer_info["ts_url"]
+                        gstreamer_config.gs_config_name = gstreamer_info["gs_config_name"]
+                        gstreamer_config.gs_input_type = gstreamer_info["gs_input_type"]
+                        gstreamer_config.gs_input_data = gstreamer_info["gs_input_data"]
+                        gstreamer_config.gs_output_type = gstreamer_info["gs_output_type"]
+                        gstreamer_config.gs_output_data = gstreamer_info["gs_output_data"]
                         gstreamer_config.process_mount = gstreamer_info["process_mount"]
-                        gstreamer_config.rtsp_url = gstreamer_info["rtsp_url"]
-                        gstreamer_config.camera_name = gstreamer_info["camera_name"]
-                        gstreamer_config.encode = gstreamer_info["encode"]
-                        gstreamer_config.is_work = gstreamer_info["is_work"]
                         back.append(gstreamer_config.all_to_dict())
 
             resp.body = json.dumps(ResponEntity().ok(
@@ -71,39 +72,49 @@ class AddGstreamerController(GstreamerController):
         try:
             gstreamer_run_yaml_path = "/home/ya/mapdata/gstreamer_run.yaml"
             media = await req.get_media()
-            camera_id = media["camera_id"]
-            ts_url = media["ts_url"]
+            gs_config_id = media["gs_config_id"]
             process_mount = media["process_mount"]
+
+            # 获取管道数据
+            dir_path = f"/home/ya/mapdata/gstreamer-config/{gs_config_id}"
+            yaml_path = os.path.join(dir_path, "config.yaml")
+            with open(yaml_path, 'r') as file:
+                existing_data = yaml.safe_load(file) or {}
 
             gstreamerConfig = GstreamerConfig()
             gstreamerConfig.id = str(uuid.uuid4())
-            gstreamerConfig.ts_url = ts_url
+            gstreamerConfig.gs_config_name = existing_data["gs_name"]
+            gstreamerConfig.gs_input_type = existing_data["input_type"]
+            gstreamerConfig.gs_input_data = existing_data["input_data"]
+            gstreamerConfig.gs_output_type = existing_data["output_type"]
+            gstreamerConfig.gs_output_data = existing_data["output_data"]
             gstreamerConfig.process_mount = process_mount
 
-            # 获取摄像头数据
-            yaml_dir = "/home/ya/mapdata/video"
-            yaml_path = os.path.join(yaml_dir, f"{camera_id}.yaml")
-            if os.path.exists(yaml_path):
+            camera_data = { }
+
+            if gstreamerConfig.gs_input_type == "Stream":
+                yaml_path = f"/home/ya/mapdata/video/{gstreamerConfig.gs_input_data}.yaml"
+                camera = InputCamera()
                 with open(yaml_path, 'r') as file:
                     existing_data = yaml.safe_load(file) or {}
-                # 遍历字典
-                gstreamerConfig.rtsp_url = existing_data["rtsp_url"]
-                gstreamerConfig.camera_name = existing_data["camera_name"]
-                gstreamerConfig.encode = existing_data["encode"]
+                    # 遍历字典
+                    camera.id = existing_data["id"]
+                    camera.rtsp_url = existing_data["rtsp_url"]
+                    camera.camera_name = existing_data["camera_name"]
+                    camera.encode = existing_data["encode"]
+                    camera.is_work = existing_data["is_work"]
+                    camera_data = camera.all_to_dict()
 
-                gstreamerManager.start_new_gstreamer(gstreamerConfig.all_to_dict())
+            gstreamerManager.start_new_gstreamer(gstreamerConfig.all_to_dict(), camera_data)
 
-                ConfigService().add_input_camera_data(gstreamer_run_yaml_path, gstreamerConfig.id,
-                                                      gstreamerConfig.to_dict())
+            ConfigService().add_input_camera_data(gstreamer_run_yaml_path, gstreamerConfig.id,
+                                                  gstreamerConfig.to_dict())
 
-                resp.body = json.dumps(ResponEntity().ok(
-                    "添加视频流运行成功",
-                    "success"
-                ))
-                resp.status = falcon.HTTP_200
-            else:
-                resp.body = json.dumps(ResponEntity().exception("添加视频流运行失败", Exception("未找到摄像头数据")))
-                resp.status = falcon.HTTP_500
+            resp.body = json.dumps(ResponEntity().ok(
+                "添加视频流运行成功",
+                "success"
+            ))
+            resp.status = falcon.HTTP_200
         except Exception as e:
             logger.error("添加视频流运行失败", e)
             resp.body = json.dumps(ResponEntity().exception("添加视频流运行失败", e))
@@ -305,4 +316,44 @@ class DelGstreamerPiePlineConfigController(GstreamerController):
         except Exception as e:
             logger.error("删除管道配置数据失败", e)
             resp.body = json.dumps(ResponEntity().exception("删除管道配置数据失败", e))
+            resp.status = falcon.HTTP_500
+
+
+# 根据ID获取管道数据
+class GetSingleGstreamerPiePlineConfigController(GstreamerController):
+    async def on_get(self, req, resp):
+        try:
+            gs_config_id = req.params["id"]
+            dir_path = f"/home/ya/mapdata/gstreamer-config/{gs_config_id}"
+            yaml_path = os.path.join(dir_path, "config.yaml")
+            with open(yaml_path, 'r') as file:
+                existing_data = yaml.safe_load(file) or {}
+                # 遍历字典
+                gs_piepline_config = GstreamerPiePlineConfig()
+                gs_piepline_config.id = existing_data["id"]
+                gs_piepline_config.gs_name = existing_data["gs_name"]
+                if existing_data["input_type"] == "Image":
+                    gs_piepline_config.input_type = "图像"
+                elif existing_data["input_type"] == "Video":
+                    gs_piepline_config.input_type = "视频"
+                elif existing_data["input_type"] == "Stream":
+                    gs_piepline_config.input_type = "视频流"
+                else:
+                    gs_piepline_config.input_type = "未知数据"
+                if existing_data["output_type"] == "Audio":
+                    gs_piepline_config.output_type = "声音播放"
+                else:
+                    gs_piepline_config.output_type = "视频流输出"
+
+                gs_piepline_config.input_data = existing_data["input_data"]
+                gs_piepline_config.output_data = existing_data["output_data"]
+
+            resp.body = json.dumps(ResponEntity().ok(
+                "根据ID获取管道数据成功",
+                gs_piepline_config.all_to_dict()
+            ))
+            resp.status = falcon.HTTP_200
+        except Exception as e:
+            logger.error("根据ID获取管道数据失败", e)
+            resp.body = json.dumps(ResponEntity().exception("根据ID获取管道数据失败", e))
             resp.status = falcon.HTTP_500

@@ -4,13 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="update flow_run_config.html">
+    <list default="true" id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="add gstreamer config">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/controller/gstreamer_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/gstreamer_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controller/home_resource.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/home_resource.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controller/video_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/video_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/wsgi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gstreamer-test1/interface_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/gstreamer-test1/interface_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/entity/gstreamer_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/entity/gstreamer_config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/service/gstreamer_pieline_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/gstreamer_pieline_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/service/gstreamer_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/gstreamer_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mapdata/templates/flow_run_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/mapdata/templates/flow_run_config.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +138,7 @@
       <workItem from="1736753576545" duration="4669000" />
       <workItem from="1736762426264" duration="3898000" />
       <workItem from="1736817291709" duration="6556000" />
-      <workItem from="1736823876103" duration="243000" />
+      <workItem from="1736823876103" duration="9903000" />
     </task>
     <task id="LOCAL-00001" summary="push structure code">
       <created>1734504859284</created>
@@ -301,7 +301,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736746643066</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="add gstreamer config">
+      <option name="closed" value="true" />
+      <created>1736824206527</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1736824206527</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -345,10 +353,10 @@
     <MESSAGE value="release 0.1.2" />
     <MESSAGE value="add files" />
     <MESSAGE value="add video config" />
-    <MESSAGE value="add gstreamer config" />
     <MESSAGE value="update gstreamer config" />
     <MESSAGE value="update page" />
     <MESSAGE value="update flow_run_config.html" />
-    <option name="LAST_COMMIT_MESSAGE" value="update flow_run_config.html" />
+    <MESSAGE value="add gstreamer config" />
+    <option name="LAST_COMMIT_MESSAGE" value="add gstreamer config" />
   </component>
 </project>

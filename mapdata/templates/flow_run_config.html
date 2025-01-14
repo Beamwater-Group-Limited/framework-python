@@ -49,14 +49,10 @@
                     <div class="modal-body">
                         <form id="addVideoForm">
                             <div class="mb-3">
-                                <label for="videoStream" class="form-label">选择视频流</label>
+                                <label for="videoStream" class="form-label">选择Gstreamer管道</label>
                                 <select class="form-select" id="videoStream" required>
                                     <!-- Options will be populated dynamically from the API -->
                                 </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="streamingUrl" class="form-label">流转发地址</label>
-                                <input type="url" class="form-control" id="streamingUrl" required>
                             </div>
                             <div class="mb-3">
                                 <label for="videoStream" class="form-label">大模型流程挂载</label>
@@ -98,7 +94,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
-                        <button type="button" class="btn btn-primary" onclick="editGstreamerProcessMount()">确认修改</button>
+                        <button type="button" class="btn btn-primary" onclick="editGstreamerProcessMount()">确认修改
+                        </button>
                     </div>
                 </div>
             </div>
@@ -109,12 +106,13 @@
             <thead class="table-dark">
             <tr>
                 <th>编号</th>
-                <th>摄像头名称</th>
-                <th>摄像头地址</th>
-                <th>摄像头编码</th>
-                <th>转发地址</th>
+                <th>管道名称</th>
+                <th>输入类型</th>
+                <th>输入数据</th>
+                <th>输出类型</th>
+                <th>输出数据</th>
                 <th>流程挂载</th>
-                <th>是否运行</th>
+                <th>运行状态</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -134,14 +132,11 @@
 
     // Function to add a new video
     async function addGstreamer() {
-        const camera_id = document.getElementById('videoStream').value;
-        const ts_url = document.getElementById('streamingUrl').value;
+        const gsConfig = document.getElementById('videoStream').value;
         const largeModelProcess = document.getElementById('largeModelProcess').value;
-        {#const isActive = document.getElementById('isActive').checked;#}
 
         const newVideo = {
-            camera_id: camera_id,
-            ts_url: ts_url,
+            gs_config_id: gsConfig,
             process_mount: largeModelProcess,
         };
 
@@ -200,13 +195,15 @@
                     flow_name = flow_content.data.flow_name
                 }
                 const row = document.createElement('tr');
+
                 row.innerHTML = `
                     <td>${item.id}</td>
-                    <td>${item.camera_name}</td>
-                    <td>${item.rtsp_url}</td>
-                    <td>${item.encode}</td>
-                    <td>${item.ts_url}</td>
-                    <td>${flow_name}</td>
+                    <td>${item.gs_config_name}</td>
+                    <td>${item.gs_input_type}</td>
+                    <td>${item.gs_input_data}</td>
+                    <td>${item.gs_output_type}</td>
+                    <td>${item.gs_output_data}</td>
+                    <td>${item.process_mount}</td>
                     <td>
                         <span class="badge bg-success">
                             正在运行
@@ -247,21 +244,21 @@
 </script>
 {# 获取所有摄像头数据 #}
 <script>
-    async function populateVideoStreamOptions() {
+    async function populateGsConfigOptions() {
         try {
-            const response = await fetch('http://192.168.0.70:28481/v1/getInputCameraController'); // Replace with the correct API endpoint
+            const response = await fetch('http://192.168.0.70:28481/v1/getGstreamerPiePlineConfigController'); // Replace with the correct API endpoint
 
             const data = await response.json(); // Parse the JSON response
-            const videoList = data["data"]
+            const gsList = data["data"]
 
-            const videoStreamSelect = document.getElementById('videoStream');
+            const gsSelect = document.getElementById('videoStream');
 
-            videoStreamSelect.innerHTML = ''; // Clear existing options
-            videoList.forEach(item => {
+            gsSelect.innerHTML = ''; // Clear existing options
+            gsList.forEach(item => {
                 const option = document.createElement('option');
                 option.value = item.id;
-                option.textContent = item.camera_name + "---" + item.rtsp_url;
-                videoStreamSelect.appendChild(option);
+                option.textContent = item.gs_name;
+                gsSelect.appendChild(option);
             });
         } catch (error) {
             console.error('Error fetching video streams:', error);
@@ -269,7 +266,7 @@
     }
 
     document.getElementById('addModal').addEventListener('shown.bs.modal', () => {
-        populateVideoStreamOptions();
+        populateGsConfigOptions();
     });
 </script>
 {# 获取所有流程数据 #}
