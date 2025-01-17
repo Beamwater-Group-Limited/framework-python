@@ -140,14 +140,14 @@ class GstreamerPiePline:
                                     "text": "画面中有什么"
                                 }
                                 # 定义访问的参数
-                                flow_back = PrefectRun(flow_yaml_path, input_data)
+                                flow_back = PrefectRun(flow_yaml_path, rgb_frame_base64)
                                 # 遍历并输出每个键和值
                                 if self.text_overlay is not None:
-                                    self.text_overlay.set_property("text", flow_back["text"])
+                                    self.text_overlay.set_property("text", "你好，hello")
                                 if self.audio_appsrc is not None:
                                     http_url = "http://192.168.0.70:28686/v1/ttsController"
                                     kwargs = {
-                                        "text": flow_back["text"]
+                                        "text": "你好，hello"
                                     }
                                     response = requests.post(http_url, data=kwargs)
                                     json_string = response.content.decode('utf-8')

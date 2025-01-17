@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="add gstreamer config">
+    <list default="true" id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="update gstreamer flow run">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controller/gstreamer_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/gstreamer_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/entity/gstreamer_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/entity/gstreamer_config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/service/gstreamer_pieline_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/gstreamer_pieline_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/service/gstreamer_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/gstreamer_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mapdata/templates/flow_run_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/mapdata/templates/flow_run_config.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/service/prefect_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/prefect_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gstreamer-test1/rtsp_send.py" beforeDir="false" afterPath="$PROJECT_DIR$/gstreamer-test1/rtsp_send.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +61,7 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;amd&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/cbtai/PycharmProjects/framework-python/app/entity&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/cbtai/PycharmProjects/framework-python/app/model&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -75,11 +73,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/model" />
       <recent name="$PROJECT_DIR$/app/entity" />
+      <recent name="$PROJECT_DIR$/app" />
       <recent name="$PROJECT_DIR$/mapdata/templates" />
       <recent name="$PROJECT_DIR$/gstreamer-test1" />
-      <recent name="$PROJECT_DIR$/app/service" />
-      <recent name="$PROJECT_DIR$/app/controller" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/mapdata/templates" />
@@ -138,7 +136,8 @@
       <workItem from="1736753576545" duration="4669000" />
       <workItem from="1736762426264" duration="3898000" />
       <workItem from="1736817291709" duration="6556000" />
-      <workItem from="1736823876103" duration="9903000" />
+      <workItem from="1736823876103" duration="30409000" />
+      <workItem from="1737021674136" duration="7686000" />
     </task>
     <task id="LOCAL-00001" summary="push structure code">
       <created>1734504859284</created>
@@ -309,7 +308,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736824206527</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="update gstreamer flow run">
+      <option name="closed" value="true" />
+      <created>1736840930468</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1736840930468</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -357,6 +364,7 @@
     <MESSAGE value="update page" />
     <MESSAGE value="update flow_run_config.html" />
     <MESSAGE value="add gstreamer config" />
-    <option name="LAST_COMMIT_MESSAGE" value="add gstreamer config" />
+    <MESSAGE value="update gstreamer flow run" />
+    <option name="LAST_COMMIT_MESSAGE" value="update gstreamer flow run" />
   </component>
 </project>
