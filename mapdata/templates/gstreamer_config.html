@@ -93,30 +93,41 @@
                                 <label for="videoUrl" class="form-label">管道输入</label>
                                 <div class="d-flex gap-3">
                                     <div>
-                                        <input type="radio" class="form-check-input" name="gstreamerInput"
+                                        <input type="checkbox" class="form-check-input" name="gstreamerInput"
                                                id="inputImage"
                                                value="Image" required
                                                onclick="toggleInputFields()">
                                         <label class="form-check-label" for="inputImage">图像</label>
                                     </div>
                                     <div>
-                                        <input type="radio" class="form-check-input" name="gstreamerInput"
+                                        <input type="checkbox" class="form-check-input" name="gstreamerInput"
                                                id="inputVideo"
                                                value="Video" required
                                                onclick="toggleInputFields()">
                                         <label class="form-check-label" for="inputVideo">视频</label>
                                     </div>
                                     <div>
-                                        <input type="radio" class="form-check-input" name="gstreamerInput"
+                                        <input type="checkbox" class="form-check-input" name="gstreamerInput"
                                                id="inputStream"
                                                value="Stream" required
                                                onclick="toggleInputFields()">
                                         <label class="form-check-label" for="inputStream">视频流</label>
                                     </div>
+                                    <div>
+                                        <input type="checkbox" class="form-check-input" name="gstreamerInput"
+                                               id="inputSoundCard"
+                                               value="SoundCard" required
+                                               onclick="toggleInputFields()">
+                                        <label class="form-check-label" for="inputSoundCard">声卡输入</label>
+                                    </div>
                                 </div>
-                                <div id="uploadField" class="mt-3" style="display: none;">
-                                    <label for="fileUpload" class="form-label">上传文件</label>
-                                    <input type="file" class="form-control" id="fileUpload">
+                                <div id="uploadImageField" class="mt-3" style="display: none;">
+                                    <label for="imageUpload" class="form-label">上传图像文件</label>
+                                    <input type="file" class="form-control" id="imageUpload">
+                                </div>
+                                <div id="uploadVideoField" class="mt-3" style="display: none;">
+                                    <label for="videoUpload" class="form-label">上传视频文件</label>
+                                    <input type="file" class="form-control" id="videoUpload">
                                 </div>
                                 <div id="textField" class="mt-3" style="display: none;">
                                     <label for="streamInput" class="form-label">选择视频流地址</label>
@@ -127,21 +138,32 @@
                             </div>
                             <script>
                                 async function toggleInputFields() {
-                                    const uploadField = document.getElementById('uploadField');
+                                    const uploadImageField = document.getElementById('uploadImageField');
+                                    const uploadVideoField = document.getElementById('uploadVideoField');
                                     const textField = document.getElementById('textField');
                                     const inputImage = document.getElementById('inputImage').checked;
                                     const inputVideo = document.getElementById('inputVideo').checked;
                                     const inputStream = document.getElementById('inputStream').checked;
+                                    const inputSoundCard = document.getElementById('inputSoundCard').checked;
 
-                                    if (inputImage || inputVideo) {
-                                        uploadField.style.display = 'block';
-                                        textField.style.display = 'none';
-                                    } else if (inputStream) {
+                                    if (inputImage) {
+                                        uploadImageField.style.display = 'block';
+                                    } else {
+                                        uploadImageField.style.display = 'none';
+                                    }
+
+                                    if (inputVideo) {
+                                        uploadVideoField.style.display = 'block';
+                                    } else {
+                                        uploadVideoField.style.display = 'none';
+                                    }
+
+                                    if (inputStream) {
                                         try {
                                             const response = await fetch('http://192.168.0.70:28481/v1/getInputCameraController'); // Replace with the correct API endpoint
 
                                             const data = await response.json(); // Parse the JSON response
-                                            const videoList = data["data"]
+                                            const videoList = data["data"];
 
                                             const videoStreamSelect = document.getElementById('videoStream');
 
@@ -155,10 +177,8 @@
                                         } catch (error) {
                                             console.error('Error fetching video streams:', error);
                                         }
-                                        uploadField.style.display = 'none';
                                         textField.style.display = 'block';
                                     } else {
-                                        uploadField.style.display = 'none';
                                         textField.style.display = 'none';
                                     }
                                 }
@@ -206,58 +226,12 @@
             </div>
         </div>
 
-        <!-- 修改 Modal -->
-        <div class="modal" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addModalLabel">修改视频</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="editVideoForm">
-
-
-                            <div class="mb-3">
-                                <label for="videoId" class="form-label">编号</label>
-                                <input type="text" class="form-control" id="editVideoId" readonly>
-                            </div>
-                            <div class="mb-3">
-                                <label for="videoName" class="form-label">名称</label>
-                                <input type="text" class="form-control" id="editVideoName" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="videoUrl" class="form-label">流地址</label>
-                                <input type="url" class="form-control" id="editVideoUrl" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="videoCodec" class="form-label">视频编码</label>
-                                <select class="form-select" id="editVideoCodec" required>
-                                    <option value="H264">H264</option>
-                                    <option value="H265">H265</option>
-                                </select>
-                            </div>
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="editIsActive">
-                                <label class="form-check-label" for="isActive">是否启动</label>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
-                        <button type="button" class="btn btn-primary" onclick="editVideo()">确认修改</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- 列表 -->
         <table class="table table-hover">
             <thead class="table-dark">
             <tr>
                 <th>编号</th>
                 <th>名称</th>
-                <th>输入类型</th>
                 <th>输入数据</th>
                 <th>输出类型</th>
                 <th>输出数据</th>
@@ -284,12 +258,14 @@
         const gstreamerInput = document.querySelector('input[name="gstreamerInput"]:checked').value;
         const outputOption = document.querySelector('input[name="outputOption"]:checked').value;
 
-        let gsInputData
-        let gsOutputData = ""
-        if (gstreamerInput === 'Image' || gstreamerInput === 'Video') {
-            // 得到文件的Base64字符串
-            gsInputData = await new Promise((resolve, reject) => {
-                const file = document.getElementById('fileUpload').files[0];
+        const inputList = []
+        const inputImage = document.getElementById('inputImage').checked;
+        const inputVideo = document.getElementById('inputVideo').checked;
+        const inputStream = document.getElementById('inputStream').checked;
+        const inputSoundCard = document.getElementById('inputSoundCard').checked;
+        if (inputImage) {
+            const imageData = await new Promise((resolve, reject) => {
+                const file = document.getElementById('imageUpload').files[0];
                 if (!file) {
                     resolve(null);
                     return;
@@ -299,9 +275,43 @@
                 reader.onerror = (error) => reject(error);
                 reader.readAsDataURL(file);
             });
-        } else {
-            gsInputData = document.getElementById('videoStream').value;
+            inputList.push({
+                "type": "Image",
+                "data": imageData
+            })
         }
+        if (inputVideo) {
+            const videoData = await new Promise((resolve, reject) => {
+                const file = document.getElementById('videoUpload').files[0];
+                if (!file) {
+                    resolve(null);
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = (error) => reject(error);
+                reader.readAsDataURL(file);
+            });
+            inputList.push({
+                "type": "Video",
+                "data": videoData
+            })
+        }
+        if (inputStream) {
+            const videoStream = document.getElementById('videoStream').value;
+            inputList.push({
+                "type": "Stream",
+                "data": videoStream
+            })
+        }
+        if (inputSoundCard) {
+            inputList.push({
+                "type": "SoundCard",
+                "data": ""
+            })
+        }
+
+        let gsOutputData = ""
 
         if (outputOption === 'VideoStream') {
             gsOutputData = document.getElementById('streamOutputInput').value
@@ -309,8 +319,7 @@
 
         const json_data = {
             gstreamer_name: gsName,
-            gstreamer_input_type: gstreamerInput,
-            gstreamer_input_data: gsInputData,
+            gstreamer_input_data: inputList,
             gstreamer_output_type: outputOption,
             gstreamer_output_data: gsOutputData,
         }
@@ -360,13 +369,20 @@
                 row.innerHTML = `
                     <td>${item.id}</td>
                     <td>${item.gs_name}</td>
-                    <td>${item.input_type}</td>
                     <td>
-                        <a href="javascript:void(0)" onclick="viewData('${item.input_type}', '${item.input_data}')">
-                            ${item.input_type === '图像' ? '查看图像' : '查看视频'}
-                        </a>
+                        ${item.input_data.map(data => `
+                            ${data.type === 'SoundCard' ? `
+                                <label>${data.type === 'SoundCard' ? '声卡输入' : ''}</label>
+                            ` : `
+                                <a href="javascript:void(0)" onclick="viewData('${data.type}', '${data.data}')">
+                                    ${data.type === 'Image' ? '查看图像' : data.type === 'Video' ? '查看视频' : '查看视频流'}
+                                </a>
+                            `}
+                            <br>
+                        `).join('')}
                     </td>
-                    <td>${item.output_type}</td>
+                    <td>
+                    ${item.output_type}</td>
                     <td>${item.output_data}</td>
                     <td>
                         <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="deleteGstreamerPiepline('${item.id}')">删除</a>
@@ -387,16 +403,16 @@
         const modal = document.getElementById('dataModal');
 
         const modalBodyContent = document.getElementById('modal-body-content');
-        if (inputType === '图像') {
+        if (inputType === 'Image') {
             const inputDataShow = inputData.replace('/home/ya/mapdata', 'http://192.168.0.70:11069');
             modalBodyContent.innerHTML = `<img src="${inputDataShow}" alt="图像" class="img-fluid">`;
-        } else if (inputType === '视频') {
+        } else if (inputType === 'Video') {
             const inputDataShow = inputData.replace('/home/ya/mapdata', 'http://192.168.0.70:11069');
             modalBodyContent.innerHTML = `
                 <video src="${inputDataShow}" controls class="img-fluid">
                     浏览器不支持视频播放
                 </video>`;
-        } else if (inputType === '视频流') {
+        } else if (inputType === 'Stream') {
 
             const response = await fetch('http://192.168.0.70:28481/v1/getSingleInputCameraController?id=' + inputData); // Replace with your actual API endpoint
             const data = await response.json(); // Parse the JSON response
@@ -404,7 +420,6 @@
             // 定义 stream 值为模板语言注入的变量
             const stream = inputCameraData.rtsp_url
             if (inputCameraData.encode === "H264") {
-
                 modalBodyContent.innerHTML = `
                 <h3>${inputCameraData.camera_name}</h3>
                 <div class="video-container">

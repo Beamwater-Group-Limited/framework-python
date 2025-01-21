@@ -44,6 +44,7 @@ class GstreamerPiePline:
 
     # 创建GStreamer语句
     def _create_gs_command(self, gstreamer_config, camera_data):
+
         if gstreamer_config["gs_output_type"] == "Audio":
             output = "autoaudiosink"
         else:

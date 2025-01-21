@@ -237,7 +237,7 @@ class GstreamerPiePline:
                                 print("记录结束")
                     else:
                         if rms > 70:
-                            if self.is_recording_duration_time >= 2:
+                            if self.is_recording_duration_time >= 3:
                                 print("开始记录")
                                 self.is_recording = True
                                 self.collected_data += data
@@ -392,7 +392,7 @@ class GstreamerPiePline:
                                     buffer.fill(0, data)
                                     print("正在发送音频")
                                     self.audio_appsrc.emit("push-buffer", buffer)
-                                    time.sleep(10)
+                                    time.sleep(15)
                                     self.is_detect = False
 
                         thread = threading.Thread(target=save_img_detect)
