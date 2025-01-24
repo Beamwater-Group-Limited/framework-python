@@ -4,12 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="add audio">
+    <list default="true" id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="update gstreamer_pipeline_config">
+      <change afterPath="$PROJECT_DIR$/.idea/sshConfigs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/webServers.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/controller/gstreamer_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/gstreamer_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/entity/gstreamer_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/entity/gstreamer_config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/entity/gstreamer_piepline_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/entity/gstreamer_piepline_config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/service/gstreamer_pieline_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/gstreamer_pieline_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controller/prefect_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/prefect_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/entity/task_node.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/entity/task_node.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/model/data_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/model/data_item.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/service/prefect_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/prefect_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/wsgi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gstreamer-test1/data_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/gstreamer-test1/data_item.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gstreamer-test1/interface_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/gstreamer-test1/interface_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gstreamer-test1/rtsp_send.py" beforeDir="false" afterPath="$PROJECT_DIR$/gstreamer-test1/rtsp_send.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mapdata/templates/gstreamer_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/mapdata/templates/gstreamer_config.html" afterDir="false" />
     </list>
@@ -62,9 +70,15 @@
     "JavaScript Debug.video_config.html.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "true",
+    "WebServerToolWindowPanel.toolwindow.highlight.mappings": "true",
+    "WebServerToolWindowPanel.toolwindow.highlight.symlinks": "true",
+    "WebServerToolWindowPanel.toolwindow.show.date": "false",
+    "WebServerToolWindowPanel.toolwindow.show.permissions": "false",
+    "WebServerToolWindowPanel.toolwindow.show.size": "false",
     "git-widget-placeholder": "amd",
-    "last_opened_file_path": "/Users/cbtai/PycharmProjects/framework-python/app/service",
+    "last_opened_file_path": "/Users/cbtai/PycharmProjects/framework-python/app/pipeline",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -76,13 +90,14 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/app/service" />
+      <recent name="$PROJECT_DIR$/app/pipeline" />
       <recent name="$PROJECT_DIR$/app/model" />
-      <recent name="$PROJECT_DIR$/app/entity" />
-      <recent name="$PROJECT_DIR$/app" />
-      <recent name="$PROJECT_DIR$/mapdata/templates" />
+      <recent name="$PROJECT_DIR$/app/error" />
+      <recent name="$PROJECT_DIR$/app/controller" />
+      <recent name="$PROJECT_DIR$/app/model/parsed_bpmn" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/untils" />
       <recent name="$PROJECT_DIR$/mapdata/templates" />
     </key>
   </component>
@@ -143,7 +158,13 @@
       <workItem from="1737021674136" duration="7910000" />
       <workItem from="1737093460088" duration="1267000" />
       <workItem from="1737096594801" duration="530000" />
-      <workItem from="1737097133130" duration="16381000" />
+      <workItem from="1737097133130" duration="20377000" />
+      <workItem from="1737523843408" duration="10591000" />
+      <workItem from="1737598243514" duration="4886000" />
+      <workItem from="1737608655693" duration="8066000" />
+      <workItem from="1737617374452" duration="5070000" />
+      <workItem from="1737622464962" duration="728000" />
+      <workItem from="1737625611634" duration="27067000" />
     </task>
     <task id="LOCAL-00001" summary="push structure code">
       <created>1734504859284</created>
@@ -330,7 +351,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737093404560</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="update gstreamer_pipeline_config">
+      <option name="closed" value="true" />
+      <created>1737447917423</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1737447917423</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -380,6 +409,7 @@
     <MESSAGE value="add gstreamer config" />
     <MESSAGE value="update gstreamer flow run" />
     <MESSAGE value="add audio" />
-    <option name="LAST_COMMIT_MESSAGE" value="add audio" />
+    <MESSAGE value="update gstreamer_pipeline_config" />
+    <option name="LAST_COMMIT_MESSAGE" value="update gstreamer_pipeline_config" />
   </component>
 </project>

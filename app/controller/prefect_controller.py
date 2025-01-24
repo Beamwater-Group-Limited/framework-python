@@ -1,15 +1,25 @@
+import ast
 import base64
 import logging
 import os
 
+import cv2
 import simplejson as json
 import falcon
+import yaml
 
 from app import config
+from app.entity.gstreamer_piepline_config import GstreamerPiePlineConfig
 from app.entity.output_data import OutputData
 from app.entity.respon_entity import ResponEntity
 from app.entity.task_node import TaskNode
-from app.service.prefect_service import PrefectService, PrefectDealService
+from app.model.data_item import DataItem, DaType, DaFormat
+from app.model.model.cbt_model_file import CbtModelFile
+from app.model.parsed_bpmn.bpmn_entity import parsed_data_to_entity
+from app.model.prefect_run.req_parameter import ReqParameter
+from app.pipeline.deal_voice_pipeline import DealVoicePipeline
+from app.service.prefect_service import PrefectService, PrefectDealService, PrefectRun
+from app.untils.bpmn_parser import parse_bpmn_and_params
 
 logger = logging.getLogger(config.app_name)
 
@@ -313,3 +323,128 @@ class TextProcessingFlowRunController(PrefectController):
             logger.error("全局检索控件调用接口失败", e)
             resp.body = json.dumps(ResponEntity().exception("全局检索控件调用接口失败", e))
             resp.status = falcon.HTTP_500
+
+
+def get_single_gstreamer_pipeline():
+    gs_config_id = "e072466d-74f0-49db-951b-1e8d2453ead9"
+    yaml_path = f"/home/ya/mapdata/gstreamer_yaml/cbtai/{gs_config_id}.yaml"
+    with open(yaml_path, 'r') as file:
+        existing_data = yaml.safe_load(file) or {}
+        # 遍历字典
+        gs_piepline_config = GstreamerPiePlineConfig()
+        gs_piepline_config.id = existing_data["id"]
+        gs_piepline_config.gs_name = existing_data["gs_name"]
+        if existing_data["output_type"] == "Audio":
+            gs_piepline_config.output_type = "声音播放"
+        else:
+            gs_piepline_config.output_type = "视频流输出"
+
+        gs_piepline_config.input_data = existing_data["input_data"]
+        gs_piepline_config.output_data = existing_data["output_data"]
+        gs_piepline_config.gs_comes = existing_data["gs_comes"]
+        gs_piepline_config.gs_gos = existing_data["gs_gos"]
+    return gs_piepline_config
+
+def get_from_bpmn():
+    # 默认使用的文件地址
+    bpmn_file_path = "/home/ya/mapdata/flow_bpmn/cbtai/Process_1.bpmn"
+    # 获取bpmn原始数据
+    bpmn_parse_data = parse_bpmn_and_params(bpmn_file_path)
+    # 获取bpmn实体类数据
+    bpmn_entity = parsed_data_to_entity(bpmn_parse_data)
+    # 获取模型接口数据
+    model_infos = CbtModelFile().scanModelDir()
+    # 遍历用户任务，为每一个任务加上其他需要的参数和访问的路径
+    for user_task in bpmn_entity["user_tasks"]:
+        model_id = user_task["model_id"]
+        interface_id = str(user_task["interface_id"])
+        model_interface_need = next(
+            (interface for model_info in model_infos if model_info["model_id"] == model_id
+             for interface in model_info["model_interfaces"] if str(interface["id"]) == interface_id),
+            None
+        )
+        if model_interface_need:
+            user_task["api_endpoint"] = f'http://{config.host}{model_interface_need["api_endpoint"]}'
+            # user_task["parameters"] = model_interface_need["parameters"]
+            in_comes = int(model_interface_need["in_comes"])
+            req_comes = model_interface_need["req_comes"]
+            for idx, req_come in enumerate(req_comes):
+                if idx != in_comes:
+                    user_task["up_params_parsed"].append(req_come)
+            # 取出第一个元素
+            first_element = user_task["up_params_parsed"].pop(0)
+
+            # 插入到指定的位置
+            user_task["up_params_parsed"].insert(in_comes, first_element)
+        else:
+            raise ValueError(f"未找到用户任务 {user_task['task_id']} 的匹配模型接口配置")
+    return bpmn_entity
+
+
+# 根据管道的输入、输出、流程的yaml文件，执行prefect流程
+class GstreamerBpmnFlowRunController(PrefectController):
+    async def on_get(self, req, resp):
+        try:
+            # 获取管道的输入和输出
+            gs_piepline_config = get_single_gstreamer_pipeline()
+            # 获取bpmn的流程
+            bpmn_entity = get_from_bpmn()
+
+            come_data_item = []
+            for data in gs_piepline_config.gs_comes:
+                come_data_item.append(DataItem(DaType(str(data["type"])), DaFormat(str(data["format"])), data["content"]))
+
+            gos_data_item = []
+            for data in gs_piepline_config.gs_gos:
+                gos_data_item.append(DataItem(DaType(str(data["type"])), DaFormat(str(data["format"])), data["content"]))
+
+            param_data = ReqParameter(come_data_item, gos_data_item, [])
+
+            # 获取一张图的base64编码
+            img_path = "/home/ya/mapdata/true.jpeg"
+            # 读取图像
+            img = cv2.imread(img_path)
+            # 将图像从BGR转为RGB（OpenCV默认是BGR格式）
+            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            # 将图像转换为JPEG格式的字节数据
+            _, buffer = cv2.imencode('.jpg', img_rgb)
+            # 将字节数据编码为base64字符串
+            img_base64 = base64.b64encode(buffer).decode('utf-8')
+
+            for data in param_data.gs_input_data:
+                data.data = img_base64
+
+            flow_back = PrefectRun(bpmn_entity, param_data)
+
+            back = []
+            for data in flow_back.gs_output_data:
+                back.append(data.obj2dct())
+
+            resp.body = json.dumps(ResponEntity().ok(
+                "根据管道的输入、输出、流程的yaml文件，执行prefect流程成功",
+                back
+            ))
+            resp.status = falcon.HTTP_200
+        except Exception as e:
+            logger.error("根据管道的输入、输出、流程的yaml文件，执行prefect流程失败", e)
+            resp.body = json.dumps(ResponEntity().exception("根据管道的输入、输出、流程的yaml文件，执行prefect流程失败", e))
+            resp.status = falcon.HTTP_500
+
+# 测试运行语音翻译管道
+class TextTranslateController(PrefectController):
+    async def on_get(self, req, resp):
+        try:
+            dealVoicePipeline = DealVoicePipeline()
+            dealVoicePipeline.start()
+
+            resp.body = json.dumps(ResponEntity().ok(
+                "测试运行语音翻译管道成功",
+                "123"
+            ))
+            resp.status = falcon.HTTP_200
+        except Exception as e:
+            logger.error("测试运行语音翻译管道失败", e)
+            resp.body = json.dumps(
+                ResponEntity().exception("测试运行语音翻译管道失败", e))
+            resp.status = falcon.HTTP_500
+

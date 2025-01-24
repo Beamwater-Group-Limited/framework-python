@@ -1,7 +1,9 @@
+import base64
 import json
 from enum import Enum
 from typing import Dict
 
+import cv2
 import requests
 
 # Copyright(c) 2020 -$today.year.by Nanjing Shushui Intelligent Technology Co., Ltd.,
@@ -422,18 +424,30 @@ def llava():
     image_right = "http://images.cocodataset.org/val2017/000000039769.jpg"
     # image_quest = "https://q6.itc.cn/q_70/images03/20240229/d3f2bf2b8bb24f65bebf0e9e1b7e8910.jpeg"
     # 创建数据
+
+    # 获取一张图的base64编码
+    img_path = "/home/ya/mapdata/true.jpeg"
+    # 读取图像
+    img = cv2.imread(img_path)
+    # 将图像从BGR转为RGB（OpenCV默认是BGR格式）
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # 将图像转换为JPEG格式的字节数据
+    _, buffer = cv2.imencode('.jpg', img_rgb)
+    # 将字节数据编码为base64字符串
+    img_base64 = base64.b64encode(buffer).decode('utf-8')
+
     comes = [
         DataItem(content="process"),
         DataItem(DaType.APPLICATION,DaFormat.fstring,content=json.dumps(cheng_schema)),
         DataItem(content='关于图片的问题的回答字数不要超过 10个字'),
         # DataItem(DaType.IMAGE, DaFormat.furl, content=f"{image_left}"),
-        DataItem(DaType.IMAGE, DaFormat.furl, content=f"{image_right}"),
+        DataItem(DaType.IMAGE, DaFormat.fbase64, content=img_base64),
         # DataItem(DaType.IMAGE, DaFormat.furl, content=f"{image_right}"),
         DataItem(content="描述一下图片内容\n")
     ]
     comeEntity =  ComeEntity().setup(comes=comes,context=ContextEntity())
     # 定义请求的 URL
-    url = "http://192.168.0.70:28286/v1/process"  # 替换为目标 URL
+    url = "http://192.168.0.70:28386/v1/process"  # 替换为目标 URL
 
     # 定义 JSON 数据
     payload = comeEntity.obj2dct()
@@ -446,6 +460,7 @@ def llava():
     print(response)
     hao_comeEntity = ComeEntity.as_ComeEntity(response.json())
     logger.debug(f'响应:{hao_comeEntity.obj2dct()}')
+    print(hao_comeEntity.obj2dct())
     return
 
 llava()

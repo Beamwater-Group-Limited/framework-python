@@ -79,6 +79,14 @@ class GstreamerPiePline:
             decodebin ! audioconvert ! audioresample ! alsasink device="hw:1,0"
         """
 
+        """
+        alsasrc device="hw:1,0" ! audioconvert ! audioresample ! alsasink device="hw:1,0"
+        
+        alsasrc device="hw:1,0" ! audioconvert ! audioresample ! rtspclientsink location=rtsp://192.168.0.70:8554/stream
+        
+        
+        """
+
     # 创建GStreamer管道
     def _create_pipeline(self):
         self.pipeline = Gst.parse_launch(gstreamer_command)

@@ -1,55 +1,84 @@
-import time
-
-from prefect import task
-import requests
 import json
+
+import requests
+from prefect import task
+
+from app.model.come_entity import ComeEntity
+from app.model.context_entity import ContextEntity
+from app.model.data_item import DataItem, DaType, DaFormat
+from app.model.prefect_run.req_parameter import ReqParameter, DataItemRealData
+from app.prompts import llava_prompts
 
 
 class TaskNode:
-    def __init__(self, task_name, http_url: str, parameters, come: [], go: []):
+    def __init__(self, task_name, http_url: str, come: [], go: [], is_last: bool):
         self.task_name = task_name
         self.http_url = http_url
         self.come = come
         self.go = go
-        self.parameters = parameters
+        self.is_last = is_last
 
     @task()
-    def run(self, kwargs: dict) -> dict:
-        # 获取这个方法需要的参数
-        kwargs = self.add_parameters(kwargs)
-        # 判断是否包含图像上传 -- 取消使用
-        # if kwargs["image_data"] is not None or kwargs["image_data"] != "":
-        #     image_input = self.upload_img(kwargs["image_data"])
-        #     kwargs["image_data"] = image_input
-        # 调用请求，并传值
-        response = requests.post(self.http_url, data=kwargs)
-        json_string = response.content.decode('utf-8')
-        # 将字符串解析为 JSON 对象
-        json_data = json.loads(json_string)
-        back = json_data['data']
+    def run(self, param_data):
+        # 根据come，替换掉其中需要传入的值
+        new_come = self.update_param_come(param_data)
 
+        cheng_schema = llava_prompts.cheng_schema
+        comeEntity = ComeEntity().setup(comes=new_come, context=ContextEntity())
 
-        kwargs = self.update_kwargs(back, kwargs)
+        # 定义 JSON 数据
+        payload = comeEntity.obj2dct()
+        # 发送 POST 请求
+        headers = {"Content-Type": "application/json"}
+        print(payload)
+        response = requests.post(self.http_url, json=payload, headers=headers)
+        hao_comeEntity = ComeEntity.as_ComeEntity(response.json())
 
-        return kwargs
+        print(hao_comeEntity.obj2dct())
 
-    # 修改中间值的状态
-    def update_kwargs(self, request_back, kwargs: dict):
-        kwargs.update(request_back)
-        return kwargs
+        if self.is_last:
+            param_data = self.add_return_come_to_param_last(hao_comeEntity.comes, param_data)
+        else:
+            # 更新param_data
+            param_data = self.add_return_come_to_param(hao_comeEntity.comes, param_data)
 
-    # def upload_img(self, img_data):
-    #     response = requests.post("http://192.168.0.70:8080/v1/save_img_data", data={"file": img_data})
-    #     json_string = response.content.decode('utf-8')
-    #     # 将字符串解析为 JSON 对象
-    #     json_data = json.loads(json_string)
-    #     back = json_data['data']
-    #     return back
+        return param_data
 
-    def add_parameters(self, kwargs: dict):
-        for item in self.parameters:
-            if str(item.get("is_update")) == "0":
-                k = item.get("key")
-                v = item.get("default_value")
-                kwargs[k] = v
-        return kwargs
+    # 修改come的值，为其中需要传入的内容，放入真实数据
+    def update_param_come(self, param_data: ReqParameter):
+        new_come = []
+        for item in self.come:
+            """
+            遍历come，判断当前的DataItem，是否需要传入真实的值
+            """
+            flag = False
+            for pp in param_data.gs_input_data + param_data.process_param_data:
+                if pp.data_type == item["type"] and pp.data_format == item["format"] and pp.content == item[
+                                  "content"]:
+                    new_come.append(DataItem(DaType(item["type"]), DaFormat(item["format"]), pp.data))
+                    flag = True
+                    break
+
+            if not flag:
+                new_come.append(DataItem(DaType(item["type"]), DaFormat(item["format"]), item["content"]))
+        return new_come
+
+    # 修改come的值，将返回值填入到process_param中
+    def add_return_come_to_param(self, return_come: [], param_data: ReqParameter):
+        for index, item in enumerate(self.go):
+            return_item = return_come[index]
+            single_process_param_data = DataItemRealData(DaType(item["type"]), DaFormat(item["format"]), item["content"],
+                                                         return_item.content)
+            param_data.process_param_data.append(single_process_param_data)
+        return param_data
+
+    # 调用最后一个任务时
+    # 修改come的值，将返回值填入到gs_output_data中
+    def add_return_come_to_param_last(self, return_come: [], param_data: ReqParameter):
+        for index, item in enumerate(self.go):
+            return_item = return_come[index]
+            for output_data in param_data.gs_output_data:
+                if output_data.data_type == item["type"] and output_data.data_format == item["format"]:
+                    output_data.content = return_item.content
+                    break
+        return param_data

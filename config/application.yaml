@@ -1,8 +1,8 @@
 app_name: framework-python
 log_level: DEBUG
 basepath: /home/ya/mapdata/
-baseurl: 119.45.31.65
-baseport: 33069
+baseurl: 192.168.0.70
+baseport: 28386
 projid: mb
 picmoudle:
 rabbitmq:

@@ -43,6 +43,7 @@ class DaFormat(Enum):
         }
         return descriptions.get(self, "无描述信息。")
 
+
 class DaType(Enum):
     TEXT = "text"  # 纯文本
     IMAGE = "image"  # 通用图像类型，支持具体格式（如 JPEG, PNG 等）

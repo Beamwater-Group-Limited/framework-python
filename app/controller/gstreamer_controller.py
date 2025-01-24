@@ -234,12 +234,10 @@ class AddGstreamerConfigController(GstreamerController):
             gstreamerPieplineConfig.output_type = gsOutputType
             gstreamerPieplineConfig.output_data = gsOutputData
             default_comes = [
-                DataItem(DaType.TEXT, DaFormat.fstring, "提问大模型的问题").obj2dct(),
-                DataItem(DaType.IMAGE, DaFormat.fbase64, "视频流的帧图像数据").obj2dct()
+                DataItem(DaType.AUDIO, DaFormat.fbase64, "接收到的声音").obj2dct()
             ]
             default_gos = [
-                DataItem(DaType.TEXT, DaFormat.fstring, "处理后文本").obj2dct(),
-                DataItem(DaType.IMAGE, DaFormat.fbase64, "处理后图像").obj2dct()
+                DataItem(DaType.AUDIO, DaFormat.fbase64, "翻译后的声音").obj2dct()
             ]
 
             gstreamerPieplineConfig.gs_comes = default_comes

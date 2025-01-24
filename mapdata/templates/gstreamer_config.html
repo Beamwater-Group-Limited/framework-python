@@ -120,6 +120,13 @@
                                                onclick="toggleInputFields()">
                                         <label class="form-check-label" for="inputSoundCard">声卡输入</label>
                                     </div>
+                                    <div>
+                                        <input type="checkbox" class="form-check-input" name="gstreamerInput"
+                                               id="inputText"
+                                               value="Text" required
+                                               onclick="toggleInputFields()">
+                                        <label class="form-check-label" for="inputText">文本</label>
+                                    </div>
                                 </div>
                                 <div id="uploadImageField" class="mt-3" style="display: none;">
                                     <label for="imageUpload" class="form-label">上传图像文件</label>
@@ -135,16 +142,22 @@
                                         <!-- Options will be populated dynamically from the API -->
                                     </select>
                                 </div>
+                                <div id="textInputField" class="mt-3" style="display: none;">
+                                    <label for="textInput" class="form-label">输入文本内容</label>
+                                    <input type="text" class="form-control" id="textInput" placeholder="请输入内容">
+                                </div>
                             </div>
                             <script>
                                 async function toggleInputFields() {
                                     const uploadImageField = document.getElementById('uploadImageField');
                                     const uploadVideoField = document.getElementById('uploadVideoField');
                                     const textField = document.getElementById('textField');
+                                    const textInputField = document.getElementById('textInputField');
                                     const inputImage = document.getElementById('inputImage').checked;
                                     const inputVideo = document.getElementById('inputVideo').checked;
                                     const inputStream = document.getElementById('inputStream').checked;
                                     const inputSoundCard = document.getElementById('inputSoundCard').checked;
+                                    const inputText = document.getElementById('inputText').checked;
 
                                     if (inputImage) {
                                         uploadImageField.style.display = 'block';
@@ -180,6 +193,12 @@
                                         textField.style.display = 'block';
                                     } else {
                                         textField.style.display = 'none';
+                                    }
+
+                                    if (inputText) {
+                                        textInputField.style.display = 'block';
+                                    } else {
+                                        textInputField.style.display = 'none';
                                     }
                                 }
                             </script>

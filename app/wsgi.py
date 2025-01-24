@@ -2,6 +2,8 @@
 
 from gi.repository import Gst, GObject, GLib
 
+from app.controller.bpmn_yaml_controller import BpmnToYamlDataController
+
 Gst.init(None)
 import logging
 
@@ -19,7 +21,8 @@ from app.controller.gstreamer_controller import GetAllGstreamerController, AddGs
 from app.controller.home_resource import VideoMonitoringPage, ConfigPageTemplate, VideoPageUse, VideoConfig, \
     FlowRunConfig, GstreamerConfig
 from app.controller.prefect_controller import TestRunFlowController, RunFlowController, \
-    ImageProcessingFlowRunController, ChatVoiceFlowRunController, GlobalSearchFlowRunController
+    ImageProcessingFlowRunController, ChatVoiceFlowRunController, GlobalSearchFlowRunController, \
+    GstreamerBpmnFlowRunController, TextTranslateController
 from falcon.asgi import App
 
 from app.controller.video_controller import AddInputCameraController, GetInputCameraController, \
@@ -68,6 +71,9 @@ def create_app():
     getGstreamerPiePlineConfigController = GetGstreamerPiePlineConfigController()
     getSingleInputCameraController = GetSingleInputCameraController()
     delGstreamerPiePlineConfigController = DelGstreamerPiePlineConfigController()
+    bpmnToYamlDataController = BpmnToYamlDataController()
+    gstreamerBpmnFlowRunController = GstreamerBpmnFlowRunController()
+    textTranslateController = TextTranslateController()
 
     cors = CORS(
         allow_origins_list=['http://localhost:8080', 'http://localhost:8082'],
@@ -142,8 +148,12 @@ def create_app():
     api.add_route('/v1/getGstreamerPiePlineConfigController', getGstreamerPiePlineConfigController)
     # 删除管道配置数据
     api.add_route('/v1/delGstreamerPiePlineConfigController', delGstreamerPiePlineConfigController)
-
-
+    # 从bpmn中获取运行数据
+    api.add_route('/v1/bpmnToYamlDataController', bpmnToYamlDataController)
+    # 从bpmn中获取运行数据
+    api.add_route('/v1/gstreamerBpmnFlowRunController', gstreamerBpmnFlowRunController)
+    # 测试语音翻译管道
+    api.add_route('/v1/textTranslateController', textTranslateController)
 
     return api
 

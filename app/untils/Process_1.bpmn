@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:magic="http://magic" xmlns:cbtai="http://cbtai" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="Process_1" isExecutable="false">
+    <bpmn2:startEvent id="StartEvent_1" magic:pipelineId="cbtai/cdc560f6-83d2-4e54-a304-c020b34383e0" magic:inputparams="text→fstring→提问大模型的问题✓image→fbase64→视频流的帧图像数据">
+      <bpmn2:outgoing>Flow_1t913me</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:userTask id="Activity_1i57j97" cbtai:modelId="llava-hf/llava-onevision-qwen2-7b-ov-hf/cc1d22d900237602e3c1093cee0c8b8ed689c42a" cbtai:interfaceId="0" cbtai:upParams="image→fbase64→视频流的帧图像数据" cbtai:downParams="text→fstring→画面的描述给后面用的">
+      <bpmn2:incoming>Flow_1t913me</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0kbt0pf</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:endEvent id="Event_0pqiuri">
+      <bpmn2:incoming>Flow_0nl216v</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_1t913me" sourceRef="StartEvent_1" targetRef="Activity_1i57j97" />
+    <bpmn2:userTask id="Activity_0vb679r" cbtai:modelId="llava-hf/llava-onevision-qwen2-7b-ov-hf/716e6976b5abe71acc9ff9b6d734bcdd18e891a4" cbtai:interfaceId="0" cbtai:upParams="image→fbase64→视频流的帧图像数据" cbtai:downParams="text→fstring→输出的">
+      <bpmn2:incoming>Flow_0kbt0pf</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0nl216v</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="Flow_0kbt0pf" sourceRef="Activity_1i57j97" targetRef="Activity_0vb679r" />
+    <bpmn2:sequenceFlow id="Flow_0nl216v" sourceRef="Activity_0vb679r" targetRef="Event_0pqiuri" />
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="382" y="62" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_033kabo_di" bpmnElement="Activity_1i57j97">
+        <dc:Bounds x="350" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0pqiuri_di" bpmnElement="Event_0pqiuri">
+        <dc:Bounds x="382" y="492" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_04n60rw_di" bpmnElement="Activity_0vb679r">
+        <dc:Bounds x="350" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1t913me_di" bpmnElement="Flow_1t913me">
+        <di:waypoint x="400" y="98" />
+        <di:waypoint x="400" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kbt0pf_di" bpmnElement="Flow_0kbt0pf">
+        <di:waypoint x="400" y="250" />
+        <di:waypoint x="400" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nl216v_di" bpmnElement="Flow_0nl216v">
+        <di:waypoint x="400" y="380" />
+        <di:waypoint x="400" y="492" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
