@@ -180,54 +180,51 @@ class DealVoicePipeline:
                     print("声音识别中！！！")
                     audio_base64 = self.convert_to_base64(self.collected_data)
 
-                    # use_param_data = self.param_data
-                    # for data in use_param_data.gs_input_data:
-                    #     data.data = audio_base64
+                    use_param_data = self.param_data
+                    for data in use_param_data.gs_input_data:
+                        data.data = audio_base64
+
+                    flow_back = PrefectRun(self.bpmn_entity, use_param_data)
+
+                    voice_data = flow_back.gs_output_data[0].data
+
+                    back = []
+                    for data in flow_back.gs_output_data:
+                        back.append(data.obj2dct())
+
+                    # # 声音识别
+                    # asr_back = self.asr_task(audio_base64)
+                    # asr_back = ComeEntity.as_ComeEntity(asr_back)
+                    # voice_text = asr_back.comes[0].content
+                    # print(f"声音识别结果为：{voice_text}")
+                    # # 文字翻译
+                    # translate_back = self.text_translation_task(voice_text)
+                    # translate_back = ComeEntity.as_ComeEntity(translate_back)
+                    # translate_text = translate_back.comes[0].content
+                    # print(f"文字翻译结果为：{translate_text}")
+                    # # 文字转声音
+                    # ll = None
+                    # try:
+                    #     voice_back = self.tts_task(translate_text)
+                    #     voice_back = ComeEntity.as_ComeEntity(voice_back)
+                    #     voice_data = voice_back.comes[0].content
                     #
-                    # flow_back = PrefectRun(self.bpmn_entity, use_param_data)
-                    #
-                    # voice_data = flow_back.gs_output_data[0].data
-
-                    # back = []
-                    # for data in flow_back.gs_output_data:
-                    #     back.append(data.obj2dct())
-
-                    # 声音识别
-                    asr_back = self.asr_task(audio_base64)
-                    asr_back = ComeEntity.as_ComeEntity(asr_back)
-                    voice_text = asr_back.comes[0].content
-                    print(f"声音识别结果为：{voice_text}")
-                    # 文字翻译
-                    translate_back = self.text_translation_task(voice_text)
-                    translate_back = ComeEntity.as_ComeEntity(translate_back)
-                    translate_text = translate_back.comes[0].content
-                    print(f"文字翻译结果为：{translate_text}")
-                    # 文字转声音
-                    ll = None
-                    try:
-                        voice_back = self.tts_task(translate_text)
-                        voice_back = ComeEntity.as_ComeEntity(voice_back)
-                        voice_data = voice_back.comes[0].content
-
-                        ll = voice_data
-                    except:
-                        print("121212")
-                    if ll:
-                        self.ppp = self.ppp + 1
-                        self.collected_value += base64.b64decode(ll)
-                        if self.ppp >= 5 :
-                            # 播放声音
-                            data = self.collected_value
-                            buffer = Gst.Buffer.new_allocate(None, len(data), None)
-                            buffer.fill(0, data)
-                            print("正在发送音频")
-                            self.audio_appsrc.emit("push-buffer", buffer)
-                            self.ppp = 0
-                            self.collected_value = bytearray()
-                    self.collected_data = bytearray()
-
-
-
+                    #     ll = voice_data
+                    # except:
+                    #     print("121212")
+                    # if ll:
+                    #     self.ppp = self.ppp + 1
+                    #     self.collected_value += base64.b64decode(ll)
+                    #     if self.ppp >= 5 :
+                    #         # 播放声音
+                    #         data = self.collected_value
+                    #         buffer = Gst.Buffer.new_allocate(None, len(data), None)
+                    #         buffer.fill(0, data)
+                    #         print("正在发送音频")
+                    #         self.audio_appsrc.emit("push-buffer", buffer)
+                    #         self.ppp = 0
+                    #         self.collected_value = bytearray()
+                    # self.collected_data = bytearray()
                 return Gst.FlowReturn.OK
             else:
                 print("未获取到样本")
