@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error {{ status_code }}</title>
+    <link href="{{ static_url }}/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen px-4">
+<!-- 错误内容容器 -->
+<div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-8 text-center">
+    <!-- 错误图标 -->
+    <div class="mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-red-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01m-6.938 4h13.856c1.054 0 1.843-.816 1.843-1.82L21 5.82C21 4.816 20.21 4 19.156 4H4.844C3.79 4 3 4.816 3 5.82l-.001 10.36c0 1.004.79 1.82 1.843 1.82z"/>
+        </svg>
+    </div>
+
+    <!-- 错误标题 -->
+    <h1 class="text-3xl font-bold text-red-500 mb-2">抱歉，遇到错误</h1>
+    <p class="text-lg text-gray-700 mb-4">错误代码：{{ status_code }}</p>
+
+    <!-- 错误描述 -->
+    <p class="text-base text-gray-500 mb-6">{{ error_message }}</p>
+    <p class="text-sm text-gray-400 mb-6">{{ error_description }}</p>
+
+    <!-- 操作选项 -->
+    <div class="flex flex-col gap-4">
+        <a href="/" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 w-full">
+            返回主页
+        </a>
+        <button onclick="location.reload()" class="bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 w-full">
+            刷新当前页面
+        </button>
+        <a href="mailto:support@example.com" class="text-blue-500 underline hover:text-blue-700">
+            联系我们以获取更多帮助
+        </a>
+    </div>
+</div>
+</body>
+</html>

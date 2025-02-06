@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BPMN 编辑器{% endblock %}</title>
+    <link href="{{ static_url }}/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+<!-- 导航栏 -->
+<div class="navbar" style="background-color: #2563eb; color: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+    <div class="container mx-auto flex items-center justify-between py-4 px-6">
+        <div class="text-2xl font-bold" style="color: white;">
+            <a href="/">BPMN 编辑器</a>
+        </div>
+        <nav class="flex" style="gap: 20px;">
+            <a href="/" style="color: white; text-decoration: none;">主页</a>
+            <a href="/create" style="color: white; text-decoration: none;">新建模型</a>
+            <a href="/upload" style="color: white; text-decoration: none;">上传模型</a>
+            <a href="/export" style="color: white; text-decoration: none;">导出模型</a>
+        </nav>
+    </div>
+</div>
+
+<!-- 内容区域 -->
+<div class="content flex-grow container mx-auto my-12 px-6">
+    <!-- 原有部分内容：保持不受影响 -->
+    <div class="content" id="js-drop-zone">
+        <div class="message intro">
+            <div class="note">
+                从你的桌面拖拽 BPMN 图到这里，或者 <a id="js-create-diagram" href>创建一个新图</a> 开始。
+            </div>
+        </div>
+
+        <div class="message error">
+            <div class="note">
+                <p>哎呀，我们无法显示 BPMN 2.0 图表。</p>
+
+                <div class="details">
+                    <span>问题原因</span>
+                    <pre></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="canvas" id="js-canvas"></div>
+        <div id="js-properties-panel"></div>
+    </div>
+</div>
+
+<!-- 页脚 -->
+<footer class="bg-gray-800 text-gray-400 py-6 mt-12">
+    <div class="container mx-auto text-center">
+        <p class="text-sm">&copy; 2025 束水智能 保留所有权利。</p>
+    </div>
+</footer>
+
+<script>
+    window.da = {{ da | tojson }};
+</script>
+<script src="{{ static_url }}/app.js"></script>
+</body>
+</html>

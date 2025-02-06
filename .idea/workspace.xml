@@ -4,22 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="update gstreamer_pipeline_config">
-      <change afterPath="$PROJECT_DIR$/.idea/sshConfigs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/webServers.xml" afterDir="false" />
+    <list default="true" id="68c738d5-f9f0-4f34-b3c2-9ac13726f9af" name="Changes" comment="update code">
       <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/webServers.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controller/gstreamer_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/gstreamer_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controller/prefect_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/prefect_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/entity/task_node.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/entity/task_node.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/model/data_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/model/data_item.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/service/prefect_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/service/prefect_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/model/renderer_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/model/renderer_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/wsgi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gstreamer-test1/data_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/gstreamer-test1/data_item.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gstreamer-test1/interface_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/gstreamer-test1/interface_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gstreamer-test1/rtsp_send.py" beforeDir="false" afterPath="$PROJECT_DIR$/gstreamer-test1/rtsp_send.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mapdata/templates/gstreamer_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/mapdata/templates/gstreamer_config.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,25 +72,26 @@
     "WebServerToolWindowPanel.toolwindow.show.permissions": "false",
     "WebServerToolWindowPanel.toolwindow.show.size": "false",
     "git-widget-placeholder": "amd",
-    "last_opened_file_path": "/Users/cbtai/PycharmProjects/framework-python/app/pipeline",
+    "last_opened_file_path": "/Users/cbtai/PycharmProjects/framework-python/mapdata/static",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.language.and.region",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/app/pipeline" />
+      <recent name="$PROJECT_DIR$/mapdata/static" />
+      <recent name="$PROJECT_DIR$/mapdata" />
       <recent name="$PROJECT_DIR$/app/model" />
-      <recent name="$PROJECT_DIR$/app/error" />
       <recent name="$PROJECT_DIR$/app/controller" />
-      <recent name="$PROJECT_DIR$/app/model/parsed_bpmn" />
+      <recent name="$PROJECT_DIR$/app/model/file" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/mapdata/static" />
       <recent name="$PROJECT_DIR$/app/untils" />
       <recent name="$PROJECT_DIR$/mapdata/templates" />
     </key>
@@ -164,7 +159,14 @@
       <workItem from="1737608655693" duration="8066000" />
       <workItem from="1737617374452" duration="5070000" />
       <workItem from="1737622464962" duration="728000" />
-      <workItem from="1737625611634" duration="27067000" />
+      <workItem from="1737625611634" duration="30067000" />
+      <workItem from="1738718315888" duration="366000" />
+      <workItem from="1738718816266" duration="41000" />
+      <workItem from="1738718893524" duration="95000" />
+      <workItem from="1738719011274" duration="81000" />
+      <workItem from="1738719363752" duration="174000" />
+      <workItem from="1738719555642" duration="67000" />
+      <workItem from="1738719637546" duration="17461000" />
     </task>
     <task id="LOCAL-00001" summary="push structure code">
       <created>1734504859284</created>
@@ -359,7 +361,23 @@
       <option name="project" value="LOCAL" />
       <updated>1737447917423</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="update code">
+      <option name="closed" value="true" />
+      <created>1737714686307</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1737714686307</updated>
+    </task>
+    <task id="LOCAL-00028" summary="update code">
+      <option name="closed" value="true" />
+      <created>1737714754900</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1737714754900</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -376,7 +394,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/amd" />
+                        <option value="origin/temp_dev" />
                       </list>
                     </value>
                   </entry>
@@ -410,6 +428,7 @@
     <MESSAGE value="update gstreamer flow run" />
     <MESSAGE value="add audio" />
     <MESSAGE value="update gstreamer_pipeline_config" />
-    <option name="LAST_COMMIT_MESSAGE" value="update gstreamer_pipeline_config" />
+    <MESSAGE value="update code" />
+    <option name="LAST_COMMIT_MESSAGE" value="update code" />
   </component>
 </project>

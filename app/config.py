@@ -22,6 +22,9 @@ try:
     port = con['baseport']
     baseurl = con['baseurl']
     host = con['baseurl'] + (f':{port}' if str(port) != "" else '')
+    # 任务回调
+    task_done_port = con['callbackport']
+    task_done_url = con['callbackurl'] + (f':{task_done_port}' if str(task_done_port) != "" else '')
     # 图床模块名 缩略图路径等使用
     picmoudle = con['picmoudle']
     picmoudle = picmoudle if picmoudle is not None else ''
@@ -33,6 +36,7 @@ try:
     queue = con['rabbitmq']['queue']
     celery_broker = f'amqp://guest@{sourceip}:{amqpport}/{myvhost}'
     celery_backend = 'rpc://'
+    ORGANIZATION = 'cbtai'
     print(f'配置环境:')
     print(f'app_name:{app_name}')
     print(f'log_level:{log_level}')

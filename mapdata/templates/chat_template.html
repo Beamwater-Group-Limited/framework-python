@@ -1,0 +1,66 @@
+{
+  "chat_template":
+  "
+    {% for message in messages %}
+        {{'<|im_start|>' + message['role'] + ' '}}
+        {# 首先渲染所有图像 #}
+        {% for content in message['content'] | selectattr('type', 'equalto', 'image') %}
+            {{ '<image>' }}
+        {% endfor %}
+        {# 然后渲染所有视频 #}
+        {% for content in message['content'] | selectattr('type', 'equalto', 'video') %}
+            {{ '<video>' }}
+        {% endfor %}
+        {# 渲染所有文字 #}
+        {% if message['role'] != 'assistant' %}
+            {% for content in message['content'] | selectattr('type', 'equalto', 'text') %}
+                {{ '\n'+ content['text'] }}
+            {% endfor %}
+        {% else %}
+          {% for content in message['content'] | selectattr('type', 'equalto', 'text') %}
+            {% generation %}
+              {{ '\n' + content['text'] }}
+            {% end generation %}
+          {% endfor %}
+        {% endif %}
+        {{'<|im_end|>'}}
+    {% endfor %}
+    {% if add_generation_prompt %}
+        {{ '<|im_start|>assistant\n' }}
+    {% endif %}
+  "
+}
+
+按照messages 的顺序，逐个message处理生成
+每一个 messagge 具有特定的 role，并有多个 content
+<|im_start|>
+<image>
+<video>
+这张图片的内容是什么
+这张图片的内容是什么
+{% generation %}
+是一只猫
+{% end generation %}
+猫在干什么
+<|im_end|>
+<|im_start|>
+<|im_end|>
+<|im_start|>
+<|im_end|>
+<|im_start|>assistant
+messages = [
+    {
+        "role": "user",
+        "content": [
+            {"type": "text", "text": "Hello, how are you?"},
+            {"type": "image", }
+        ]
+    },
+    {
+        "role": "assistant",
+        "content": [
+            {"type": "text", "text": "I'm good, thank you! How can I assist you today?"},
+            {"type": "video"}
+        ]
+    }
+]

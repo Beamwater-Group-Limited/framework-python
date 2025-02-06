@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大模型管理</title>
+    <link href="{{ static_url }}/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+<div class="container mx-auto bg-white p-8 rounded-lg shadow-lg max-w-full">
+    <h1 class="text-2xl font-bold text-gray-700 mb-6">大模型管理页面</h1>
+    <!-- 模型列表 -->
+    <h2 class="text-xl font-semibold text-gray-600 mb-4">模型列表</h2>
+    <div class="overflow-x-auto">
+        <table class="table-auto w-full border-collapse border border-gray-300 text-sm">
+            <thead>
+            <tr class="bg-gray-200 text-gray-700">
+                <th class="border border-gray-300 px-4 py-2">ID</th>
+                <th class="border border-gray-300 px-4 py-2">公司名称</th>
+                <th class="border border-gray-300 px-4 py-2">模型名称</th>
+                <th class="border border-gray-300 px-4 py-2">模型版本</th>
+                <th class="border border-gray-300 px-4 py-2">模型类型</th>
+                <th class="border border-gray-300 px-4 py-2">模型路径</th>
+                <th class="border border-gray-300 px-4 py-2 text-center">操作</th>
+            </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+            {% for model in models %}
+            <tr>
+                <td class="border border-gray-300 px-4 py-2 text-gray-700">{{ model.model_id }}</td>
+                <td class="border border-gray-300 px-4 py-2 text-gray-700">{{ model.company_name }}</td>
+                <td class="border border-gray-300 px-4 py-2 text-gray-700">{{ model.model_name }}</td>
+                <td class="border border-gray-300 px-4 py-2 text-gray-700">{{ model.revision }}</td>
+                <td class="border border-gray-300 px-4 py-2 text-gray-700">{{ model.model_class }}</td>
+                <td class="border border-gray-300 px-4 py-2 text-gray-700 truncate">{{ model.model_path }}</td>
+                <td class="border border-gray-300 px-4 py-2 text-center">
+                    <button onclick="toggleDetails(this)"
+                            class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                        显示详情
+                    </button>
+                </td>
+            </tr>
+
+            <!-- 模型详情 -->
+            <tr class="hidden details-row bg-gray-100">
+                <td colspan="7" class="px-4 py-4">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-3">模型接口详情</h3>
+                    {% if model.model_interfaces and model.model_interfaces|length > 0 %}
+                    <p>接口 API: {{host}}{{ model.model_interfaces[0].api_endpoint }}</p>
+                    <p>请求头: {{ model.model_interfaces[0].headers }}</p>
+                    <p>请求方法: {{ model.model_interfaces[0].method }}</p>
+                    <!-- 模型接口列表 -->
+                    <h4 class="text-lg font-semibold text-gray-700 mt-6 mb-3">模型接口列表</h4>
+                    <table class="table-auto w-full border-collapse border border-gray-300 text-sm">
+                        <thead>
+                        <tr class="bg-gray-200 text-gray-700">
+                            <th class="border border-gray-300 px-4 py-2">id</th>
+                            <th class="border border-gray-300 px-4 py-2">接口描述</th>
+                            <th class="border border-gray-300 px-4 py-2">请求数据规范</th>
+                            <th class="border border-gray-300 px-4 py-2">响应数据规范</th>
+                            <th class="border border-gray-300 px-4 py-2">请求范例</th>
+                            <th class="border border-gray-300 px-4 py-2">响应范例</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for interface in model.model_interfaces %}
+                        <tr>
+                            <!-- 接口名称 -->
+                            <td class="border border-gray-300 px-4 py-2 text-gray-700">{{ interface.id }}
+                            </td>
+                            <!-- 接口名称 -->
+                            <td class="border border-gray-300 px-4 py-2 text-gray-700">{{ interface.interface_name }}
+                            </td>
+                            <!-- 请求参数 -->
+                            <td class="border border-gray-300 px-4 py-2 text-gray-700">
+                                {% if interface.req_comes and interface.req_comes|length > 0 %}
+                                {% for key in interface.req_comes %}
+                                <div class="border border-gray-300 rounded-lg shadow-lg p-4 bg-white">
+                                    <h3 class="text-lg font-bold text-gray-800">类型: {{ key.type or '无类型'
+                                        }}</h3>
+                                    <p class="text-sm text-gray-600">格式: {{ key.format or '无格式' }}</p>
+                                    <p class="text-sm text-gray-600">内容: {{ key.content or '无内容' }}</p>
+                                </div>
+                                {% endfor %}
+                                {% else %}
+                                <p class="text-sm text-gray-600">无请求参数</p>
+                                {% endif %}
+                            </td>
+
+                            <!-- 响应参数 -->
+                            <td class="border border-gray-300 px-4 py-2 text-gray-700">
+                                {% if interface.resp_comes and interface.resp_comes|length > 0 %}
+                                {% for key in interface.resp_comes %}
+                                <!--todo 调试代码 -->
+                                <script>
+                                    console.log("调试 key 数据:", {{ key | tojson | safe }});
+                                </script>
+                                <div class="border border-gray-300 rounded-lg shadow-lg p-4 bg-white">
+                                    <h3 class="text-lg font-bold text-gray-800">类型: {{ key.type or '无类型'
+                                        }}</h3>
+                                    <p class="text-sm text-gray-600">格式: {{ key.format or '无格式' }}</p>
+                                    <p class="text-sm text-gray-600">内容: {{ key.content or '无内容' }}</p>
+                                </div>
+                                {% endfor %}
+                                {% else %}
+                                <p class="text-sm text-gray-600">无响应参数</p>
+                                {% endif %}
+                            </td>
+
+                            <!-- 请求 Body -->
+                            <td class="border border-gray-300 px-4 py-2 text-gray-700 align-top">
+                                <div class="max-h-[500px] overflow-y-auto">
+                                    <pre class="whitespace-pre-wrap">{{ interface.request_body_json or '无请求体' }}</pre>
+                                </div>
+                            </td>
+                            <!-- 响应 Body -->
+                            <td class="border border-gray-300 px-4 py-2 text-gray-700 align-top">
+                                <div class="max-h-[500px] overflow-y-auto">
+                                    <pre class="whitespace-pre-wrap">{{ interface.response_json or '无响应体' }}</pre>
+                                </div>
+                            </td>
+
+                            <!-- 编辑按钮 -->
+                            <td class="border border-gray-300 px-4 py-2 text-center">
+                                <a href="/edit_interface?model_id={{ model.model_id  }}&interface_id={{ interface.id }}"
+                                   class="text-blue-500 hover:text-blue-700">编辑</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- JavaScript for toggling details -->
+<script>
+    function toggleDetails(button) {
+        // 获取当前行的下一行（详情所在行）
+        const detailsRow = button.closest('tr').nextElementSibling;
+
+        // 切换隐藏/显示状态
+        if (detailsRow.classList.contains('hidden')) {
+            detailsRow.classList.remove('hidden');
+        } else {
+            detailsRow.classList.add('hidden');
+        }
+    }
+</script>
+</body>
+</html>

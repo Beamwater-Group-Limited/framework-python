@@ -3,20 +3,6 @@
   <component name="PublishConfigData" autoUpload="Always" serverName="root@192.168.0.70:28122 password" remoteFilesAllowedToDisappearOnAutoupload="false" confirmBeforeUploading="false">
     <option name="confirmBeforeUploading" value="false" />
     <serverData>
-      <paths name="192.168.0.65">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/home/ya" local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="root@192.168.0.100:8022 password">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/home/ya" local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
       <paths name="root@192.168.0.70:28122 password">
         <serverdata>
           <mappings>
@@ -24,7 +10,7 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="root@192.168.0.70:28122 password (2)">
+      <paths name="root@192.168.0.72:28122 password">
         <serverdata>
           <mappings>
             <mapping deploy="/home/ya" local="$PROJECT_DIR$" />

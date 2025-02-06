@@ -3,6 +3,14 @@
 from gi.repository import Gst, GObject, GLib
 
 from app.controller.bpmn_yaml_controller import BpmnToYamlDataController
+from app.controller.data_item_controller import DataTypeController, DataFormatController
+from app.controller.diagram_controller import DiagramController
+from app.controller.model_bpmn_controller import ModelBpmnController
+from app.controller.pipeline_controller import PipelineController
+from app.controller.task_pre_params_controller import TaskPreParamsController
+from app.resource.home_resource import ImageUploadPage, AboutPage, ServicesPage, ContactPage, MainPage, ProductPage, \
+    ModelPage, EditInterfacePage, PreFectFlowPage, FlowListPage, BpmnEditorPage
+from app.resource.webpack_resource import BpmnjsWebpackPage, PropertiesPanelAsyncExtensionPage
 
 Gst.init(None)
 import logging
@@ -74,6 +82,12 @@ def create_app():
     bpmnToYamlDataController = BpmnToYamlDataController()
     gstreamerBpmnFlowRunController = GstreamerBpmnFlowRunController()
     textTranslateController = TextTranslateController()
+    diagramController = DiagramController()
+    taskPreParamsController = TaskPreParamsController()
+    modelBpmnController = ModelBpmnController()
+    dataFormatController = DataFormatController()
+    dataTypeController = DataTypeController()
+    pipelineController = PipelineController()
 
     cors = CORS(
         allow_origins_list=['http://localhost:8080', 'http://localhost:8082'],
@@ -155,6 +169,14 @@ def create_app():
     # 测试语音翻译管道
     api.add_route('/v1/textTranslateController', textTranslateController)
 
+    api.add_route("/v1/diagram", diagramController)
+    api.add_route("/v1/task_pre_params", taskPreParamsController)
+    api.add_route("/v1/model_bpmn", modelBpmnController)
+
+    api.add_route("/v1/data_type", dataTypeController)
+    api.add_route("/v1/data_format", dataFormatController)
+    api.add_route("/v1/pipeline_get", pipelineController)
+
     return api
 
 
@@ -166,6 +188,20 @@ def rander_page(api: App) -> 'App':
     videoConfig = VideoConfig()
     flowRunConfig = FlowRunConfig()
     gstreamerConfig = GstreamerConfig()
+    # 创建 HomeResource 的实例，用于处理主页的相关请求
+    imageUploadPage = ImageUploadPage()
+    aboutPage = AboutPage()
+    servicesPage = ServicesPage()
+    contactPage = ContactPage()
+    mainPage = MainPage()
+    productPage = ProductPage()
+    modelPage = ModelPage()
+    editInterfacePage = EditInterfacePage()
+    preFectFlowPage = PreFectFlowPage()
+    flowListPage = FlowListPage()
+    bpmnEditorPage = BpmnEditorPage()
+    bpmnjsWebpackPage = BpmnjsWebpackPage()
+    propertiesPanelAsyncExtensionPage = PropertiesPanelAsyncExtensionPage()
     # 添加静态文件中间件
     api.add_static_route('/static', config.basepath / 'static')
     api.add_route('/video_monitoring_page', video_monitoring_page)
@@ -175,6 +211,20 @@ def rander_page(api: App) -> 'App':
     api.add_route('/flowRunConfig', flowRunConfig)
     api.add_route('/gstreamerConfig', gstreamerConfig)
 
+    api.add_route('/', mainPage)
+    api.add_route('/about', aboutPage)
+    api.add_route('/services', servicesPage)
+    api.add_route('/contact', contactPage)
+    api.add_route('/product', productPage)
+    api.add_route('/image_upload', imageUploadPage)
+    api.add_route('/models', modelPage)
+    api.add_route('/edit_interface', editInterfacePage)
+    api.add_route('/save_interface', editInterfacePage)
+    api.add_route('/prefect_flow', preFectFlowPage)
+    api.add_route('/flow_list', flowListPage)
+    api.add_route('/bpmn_editor', bpmnEditorPage)
+    api.add_route('/bpmn-js-example-modeler', bpmnjsWebpackPage)
+    api.add_route('/properties-panel-async-extension', propertiesPanelAsyncExtensionPage)
     return api
 
 

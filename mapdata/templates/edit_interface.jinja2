@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑接口</title>
+    <link href="{{ static_url }}/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+<div class="container mx-auto mt-10">
+    <h1 class="text-3xl font-bold mb-5 text-center">编辑接口信息</h1>
+    <!--todo 调试代码 -->
+    <script>
+        console.log("调试 interface 数据:", {{ interface | tojson }});
+    </script>
+    <form method="POST" action="/save_interface" class="bg-white shadow rounded-lg p-6">
+        <!-- 隐藏字段 (接口 ID 和模型 ID) -->
+        <input type="hidden" name="interface_id" value="{{ interface.id }}">
+        <input type="hidden" name="model_id" value="{{ model_id }}">
+
+        <!-- 接口名称 -->
+        <div class="mb-5">
+            <label for="interface_name" class="block text-gray-700 font-bold">接口名称：</label>
+            <input type="text" id="interface_name" name="interface_name"
+                   class="w-full border border-gray-300 rounded p-2"
+                   value="{{ interface.interface_name }}">
+        </div>
+
+        <!-- 接口 API Endpoint -->
+        <div class="mb-5">
+            <label for="api_endpoint" class="block text-gray-700 font-bold">API Endpoint：</label>
+            <input type="text" id="api_endpoint" name="api_endpoint"
+                   class="w-full border border-gray-300 rounded p-2"
+                   value="{{ interface.api_endpoint }}">
+        </div>
+
+        <!-- 接口 Headers -->
+        <div class="mb-5">
+            <label for="headers" class="block text-gray-700 font-bold">Headers：</label>
+            <textarea id="headers" name="headers"
+                      class="w-full border border-gray-300 rounded p-2"
+                      rows="3">{{ interface.headers or '' }}</textarea>
+        </div>
+
+        <!-- 接口 Method -->
+        <div class="mb-5">
+            <label for="method" class="block text-gray-700 font-bold">Method：</label>
+            <select id="method" name="method"
+                    class="w-full border border-gray-300 rounded p-2">
+                <option value="GET" {% if interface.method == "GET" %}selected{% endif %}>GET</option>
+                <option value="POST" {% if interface.method == "POST" %}selected{% endif %}>POST</option>
+                <option value="PUT" {% if interface.method == "PUT" %}selected{% endif %}>PUT</option>
+                <option value="DELETE" {% if interface.method == "DELETE" %}selected{% endif %}>DELETE</option>
+            </select>
+        </div>
+
+        <!-- 请求体 -->
+        <div class="mb-5">
+            <label for="request_body_json" class="block text-gray-700 font-bold">请求体：</label>
+            <textarea id="request_body_json" name="request_body_json"
+                      class="w-full border border-gray-300 rounded p-2"
+                      rows="5">{{ interface.request_body_json or '{}' }}</textarea>
+        </div>
+
+        <!-- 响应体 -->
+        <div class="mb-5">
+            <label for="response_json" class="block text-gray-700 font-bold">响应体：</label>
+            <textarea id="response_json" name="response_json"
+                      class="w-full border border-gray-300 rounded p-2"
+                      rows="5">{{ interface.response_json or '{}' }}</textarea>
+        </div>
+
+        <!-- 请求参数 -->
+        <div class="mb-5">
+            <h2 class="text-lg font-bold text-gray-800">请求参数：</h2>
+            {% if interface.req_comes and interface.req_comes|length > 0 %}
+                {% for req in interface.req_comes %}
+                    <div class="bg-gray-100 border border-gray-300 rounded-lg p-4 mb-3">
+                        <label for="req_comes_{{ loop.index }}_type" class="block text-gray-800 font-bold">类型：</label>
+                        <input type="text" id="req_comes_{{ loop.index }}_type"
+                               name="req_comes_{{ loop.index }}_type"
+                               class="w-full border border-gray-300 rounded p-2"
+                               value="{{ req.type or '' }}">
+
+                        <label for="req_comes_{{ loop.index }}_format"
+                               class="block text-gray-800 font-bold mt-3">格式：</label>
+                        <input type="text" id="req_comes_{{ loop.index }}_format"
+                               name="req_comes_{{ loop.index }}_format"
+                               class="w-full border border-gray-300 rounded p-2"
+                               value="{{ req.format or '' }}">
+
+                        <label for="req_comes_{{ loop.index }}_content"
+                               class="block text-gray-800 font-bold mt-3">内容：</label>
+                        <input type="text" id="req_comes_{{ loop.index }}_content"
+                               name="req_comes_{{ loop.index }}_content"
+                               class="w-full border border-gray-300 rounded p-2"
+                               value="{{ req.content or '' }}">
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-gray-600">无请求参数</p>
+            {% endif %}
+        </div>
+
+        <!-- 响应参数 -->
+        <div class="mb-5">
+            <h2 class="text-lg font-bold text-gray-800">响应参数：</h2>
+            {% if interface.resp_comes and interface.resp_comes|length > 0 %}
+                {% for resp in interface.resp_comes %}
+                    <div class="bg-gray-100 border border-gray-300 rounded-lg p-4 mb-3">
+                        <label for="resp_comes_{{ loop.index }}_type"
+                               class="block text-gray-800 font-bold">类型：</label>
+                        <input type="text" id="resp_comes_{{ loop.index }}_type"
+                               name="resp_comes_{{ loop.index }}_type"
+                               class="w-full border border-gray-300 rounded p-2"
+                               value="{{ resp.type or '' }}">
+
+                        <label for="resp_comes_{{ loop.index }}_format"
+                               class="block text-gray-800 font-bold mt-3">格式：</label>
+                        <input type="text" id="resp_comes_{{ loop.index }}_format"
+                               name="resp_comes_{{ loop.index }}_format"
+                               class="w-full border border-gray-300 rounded p-2"
+                               value="{{ resp.format or '' }}">
+
+                        <label for="resp_comes_{{ loop.index }}_content"
+                               class="block text-gray-800 font-bold mt-3">内容：</label>
+                        <input type="text" id="resp_comes_{{ loop.index }}_content"
+                               name="resp_comes_{{ loop.index }}_content"
+                               class="w-full border border-gray-300 rounded p-2"
+                               value="{{ resp.content or '' }}">
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-gray-600">无响应参数</p>
+            {% endif %}
+        </div>
+
+        <!-- 提交按钮 -->
+        <div class="text-center">
+            <button type="submit" class="px-6 py-3 bg-blue-500 text-white font-bold rounded hover:bg-blue-600">
+                保存
+            </button>
+
+            <a href="javascript:history.back()"
+               class="px-6 py-3 bg-gray-500 text-white font-bold rounded hover:bg-gray-600 mr-4">
+                返回
+            </a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

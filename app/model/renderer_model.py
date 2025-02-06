@@ -16,19 +16,30 @@ from app import config
 from app.error.PyLogger import pyLogger
 
 logger = pyLogger()
+
+
 # 定义一个Jinja2模板渲染器类
 class Jinja2Renderer:
-    # 初始化方法，设置模板路径和静态文件URL
-    def __init__(self):
-        templates_path  = config.basepath / 'templates'
-        static_url = config.basepath / '/static/'
+
+    # 初始化方法，用于设置模板路径和静态文件URL路径
+    def __init__(self, templates_path: str = None, static_url: str = None):
+        if templates_path is None:
+            templates_path = config.basepath / 'templates'
+        if static_url is None:
+            static_url = config.basepath / '/static/'
+        # 输出日志，记录模板路径的绝对路径
         logger.debug(f"模板路径:{os.path.abspath(templates_path)}")
-        # 配置Jinja2环境，使用FileSystemLoader加载模板路径，并自动转义HTML和XML文件
+        # 配置Jinja2的环境，指定加载器为FileSystemLoader，加载模板路径
+        # 同时开启HTML和XML文件的自动转义
         self.env = Environment(
             loader=FileSystemLoader(templates_path),
-            autoescape=select_autoescape(['html', 'xml'])
+            autoescape=select_autoescape(['html', 'xml', 'htm', 'jinja2'])
         )
-        # 设置静态文件URL路径
+        # 可以在此配置一些 Jinja2 filters 或 global functions
+        self.env.filters['format_date'] = lambda d: d.strftime('%Y-%m-%d')
+        # 全局函数
+        # self.env.globals['some_global'] = ...
+        # 初始化静态文件的URL路径
         self.static_url = static_url
 
     # 定义渲染方法，根据模板名称和上下文渲染模板

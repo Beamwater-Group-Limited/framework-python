@@ -10,30 +10,16 @@
 from enum import Enum
 from typing import Dict
 
-"""
-# 创建一个 DataItem 对象实例
-data_item_instance = DataItem(
-    come_type=DaType.TEXT,  # 数据类型为文本
-    come_format=DaFormat.fstring,  # 数据格式为字符串
-    content="This is a sample text content."  # 实际内容
-)
-1. **`come_type`**:
-    - `DaType.TEXT` 表示数据类型为文本（如文本文字）。
-    - 其他选项可以是 `IMAGE`、`AUDIO`、`VIDEO` 等。
-
-2. **`come_format`**:
-    - `DaFormat.fstring` 表示字符串形式的内容格式。
-    - 其他选项可以是 `furl`（URL）、`fpath`（文件路径）等。
-
-3. **`content`**:
-    - 实际的数据内容，在本例中是简单的一段文本。
-"""
 
 class DaFormat(Enum):
     fstring = 'fstring'
     furl = "furl"
     fbase64 = "fbase64"
     fpath = "fpath"
+
+    @staticmethod
+    def obj2dct() -> []:
+        return [{'label': member.name, 'value': member.value} for member in DaFormat]
 
     def describe(self):
         descriptions = {
@@ -52,7 +38,18 @@ class DaType(Enum):
     APPLICATION = "application"  # 任意文件类型
     FORM_DATA = "multipart/form-data"  # 多部分表单数据
 
+    @staticmethod
+    def obj2dct() -> []:
+        return [{'label': member.name, 'value': member.value} for member in DaType]
 
+
+class DaContent:
+    @staticmethod
+    def obj2dct(contents: []) -> []:
+        return [{'label': con, 'value': con} for con in contents]
+
+
+# 未使用
 class MIMEFormat(Enum):
     plain = "text/plain"  # 纯文本
     html = "text/html"  # HTML 格式
@@ -123,7 +120,7 @@ class DataItem:
             "format": self.data_format,
             "content": self.content,
         }
-    
+
     # @staticmethod
     # def s2eci(enum_class, member_name):
     #     """
@@ -148,7 +145,9 @@ class DataItem:
         :return: DataItem 实例
         """
         return DataItem(
-            come_type=DaType(dct.get("type", DaType.TEXT.value)),
-            come_format= DaFormat(dct.get("format", DaFormat.fstring.value)),
+            # come_type=DaType(dct.get("type", DaType.TEXT.value)),
+            come_type=DaType(dct.get("type", None)),
+            # come_format= DaFormat(dct.get("format", DaFormat.fstring.value)),
+            come_format=DaFormat(dct.get("format", None)),
             content=dct.get("content"),
         )

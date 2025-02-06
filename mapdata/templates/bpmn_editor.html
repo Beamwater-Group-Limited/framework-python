@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BPMN.js 流程编辑器</title>
+    <script src="https://unpkg.com/bpmn-js@11.0.3/dist/bpmn-modeler.production.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+        }
+
+        #toolbar {
+            width: 200px;
+            background-color: #f4f4f4;
+            border-right: 1px solid #ccc;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        #canvas {
+            flex: 1;
+            height: 100%;
+        }
+
+        #property-editor {
+            width: 250px;
+            background-color: #f9f9f9;
+            border-left: 1px solid #ccc;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .task-item {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            text-align: center;
+            cursor: grab;
+        }
+
+        label {
+            display: block;
+            margin-top: 20px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        #toolbar {
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+<!-- 左侧工具栏 -->
+<div id="toolbar">
+    <div class="task-item" draggable="true" data-type="bpmn:UserTask">用户任务</div>
+    <div class="task-item" draggable="true" data-type="bpmn:ServiceTask">服务任务</div>
+    <div class="task-item" draggable="true" data-type="bpmn:ScriptTask">脚本任务</div>
+</div>
+
+<!-- 中间 BPMN 绘制区域 -->
+<div id="canvas"></div>
+
+<!-- 右侧属性编辑器 -->
+<div id="property-editor">
+    <h3>任务属性编辑器</h3>
+    <!-- 任务名称 -->
+    <label for="task-name">名称</label>
+    <input type="text" id="task-name" placeholder="请输入任务名称">
+
+    <!-- 下拉选框从后端动态渲染 -->
+    <label for="task-options">任务类型</label>
+    <select id="task-options">
+        {% for option in dropdown_options %}
+        <option value="{{ option.value }}">{{ option.label }}</option>
+        {% endfor %}
+    </select>
+
+    <!-- 保存按钮 -->
+    <button id="save-task" onclick="saveTaskProperties()">保存属性</button>
+</div>
+<script>
+    // 后端传递的 defaultDiagram 数据，用 Jinja2 渲染到前端
+    const defaultDiagram = `{{ default_diagram | safe }}`;
+    // 定义所有可用的 BPMN 元素
+    const bpmnElements = [
+        {type: 'bpmn:StartEvent', label: '开始事件'},
+        {type: 'bpmn:EndEvent', label: '结束事件'},
+        {type: 'bpmn:UserTask', label: '用户任务'},
+        {type: 'bpmn:ServiceTask', label: '服务任务'},
+        {type: 'bpmn:ExclusiveGateway', label: '排他网关'},
+        {type: 'bpmn:ParallelGateway', label: '并行网关'},
+        {type: 'bpmn:SubProcess', label: '子流程'},
+    ];
+    // 初始化 BPMN.js 模型器
+    const BpmnModeler = window.BpmnJS;
+    const modeler = new BpmnModeler({
+        container: '#canvas',
+        height: '100%',
+    });
+
+    // 使用 async/await 导入 XML
+    async function loadDiagram() {
+        try {
+            await modeler.importXML(defaultDiagram); // 使用 Promise 导入 XML
+            console.log('BPMN 图加载成功！');
+        } catch (err) {
+            console.error('加载 BPMN 图时出错：', err);
+        }
+    }
+
+    loadDiagram();
+    // 工具栏动态生成任务项
+    const toolbar = document.getElementById('toolbar');
+    bpmnElements.forEach((element) => {
+        const taskItem = document.createElement('div');
+        taskItem.className = 'task-item';
+        taskItem.setAttribute('draggable', 'true');
+        taskItem.setAttribute('data-type', element.type);
+        taskItem.textContent = element.label;
+
+        toolbar.appendChild(taskItem);
+    });
+    let draggedTaskType = null; // 保存当前拖拽的任务类型
+
+
+    // 工具栏任务开始拖拽时，保存任务类型
+    toolbar.addEventListener('dragstart', (event) => {
+        if (event.target.classList.contains('task-item')) {
+            draggedTaskType = event.target.getAttribute('data-type');
+        }
+    });
+    // 绘制区域支持拖拽放置事件
+    const canvas = document.querySelector('#canvas');
+
+    // 禁止默认行为，允许放置
+    canvas.addEventListener('dragover', (event) => {
+        event.preventDefault();
+    });
+
+    canvas.addEventListener('drop', async (event) => {
+        event.preventDefault();
+
+        if (!draggedTaskType) {
+            console.error('未检测到任务类型，无法拖拽到绘制区域！');
+            return;
+        }
+
+        // 获取鼠标位置（相对于 canvas 的坐标）
+        const canvasRect = canvas.getBoundingClientRect();
+        const position = {
+            x: event.clientX - canvasRect.left,
+            y: event.clientY - canvasRect.top,
+        };
+
+        console.log(`放置任务类型: ${draggedTaskType} 于坐标: `, position);
+
+        // 在绘制区域中创建新任务的形状
+        const elementFactory = modeler.get('elementFactory');
+        const modeling = modeler.get('modeling');
+
+        // 创建一个任务元素（例如 UserTask、ServiceTask 等）
+        const shape = elementFactory.createShape({
+            type: draggedTaskType,
+        });
+
+        // 添加到流程图
+        modeling.createShape(shape, position, modeler.get('canvas').getRootElement());
+
+        // 自动连线到最近的元素
+        const allElements = modeler.get('canvas')._elementRegistry.filter((el) => el.id !== shape.id);
+        const nearestElement = findClosestElement(position, allElements);
+
+        if (nearestElement) {
+            console.log('找到最近的元素:', nearestElement);
+            modeling.connect(nearestElement, shape); // 自动连接最近的元素与新元素
+        }
+
+        // 重置状态
+        draggedTaskType = null;
+    });
+
+    let selectedElement = null;
+
+    // 点击任务后显示属性到侧边栏
+    modeler.on('element.click', (event) => {
+        selectedElement = event.element;
+
+        if (selectedElement && selectedElement.type.includes('Task')) {
+            const taskName = selectedElement.businessObject.name || '';
+            const taskType = selectedElement.businessObject.$type || '';
+
+            // 设置右侧编辑器显示的任务名称和类型
+            document.getElementById('task-name').value = taskName;
+            document.getElementById('task-options').value = taskType;
+        }
+    });
+
+    // 保存属性的功能
+    function saveTaskProperties() {
+        if (selectedElement) {
+            const taskName = document.getElementById('task-name').value;
+            const taskType = document.getElementById('task-options').value;
+
+            const modeling = modeler.get('modeling');
+            modeling.updateProperties(selectedElement, {
+                name: taskName,
+                $type: taskType, // 更新任务类型
+            });
+
+            alert('任务属性已保存！');
+        } else {
+            alert('未选择任何任务！');
+        }
+    }
+
+    // 辅助函数：计算最近的元素
+    function findClosestElement(position, elements) {
+        let nearestElement = null;
+        let minDistance = Infinity;
+
+        elements.forEach((element) => {
+            const {x, y, width, height} = element.graphics[0].getBBox(); // 获取元素的位置
+            const elementCenter = {x: x + width / 2, y: y + height / 2};
+            const distance = Math.sqrt(
+                Math.pow(position.x - elementCenter.x, 2) + Math.pow(position.y - elementCenter.y, 2)
+            );
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestElement = element;
+            }
+        });
+
+        return nearestElement;
+    }
+
+    canvas.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        canvas.style.cursor = 'grabbing'; // 拖拽时改变鼠标样式
+    });
+
+    canvas.addEventListener('drop', () => {
+        canvas.style.cursor = 'default'; // 恢复鼠标样式
+    });
+</script>
+</body>
+</html>

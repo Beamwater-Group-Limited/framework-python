@@ -1,0 +1,79 @@
+<!-- templates/image_upload.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ static_url }}/css/styles.css">
+</head>
+<body>
+
+<a href="/flow_list" style="display: block; margin-top: 20px; text-decoration: none; color: blue;">跳转到流列表页面</a>
+    <h1>{{ message }}</h1>
+    <img src="{{ static_url }}/images/logo.png" alt="Logo">
+    <script src="{{ static_url }}/js/scripts.js"></script>
+     <h1>上传图片</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <label for="imageUpload">上传图片:</label>
+        <input type="file" id="imageUpload" name="image" onchange="previewImage(event)">
+        <button type="button" onclick="uploadImage()">上传</button>
+        <div id="imagePreview"
+             style="margin-top: 10px; border: 1px solid #ccc; width: 250px; height: 250px; display: flex; justify-content: center; align-items: center;">
+            <img id="preview" src="" alt="预览图片" style="max-width: 100%; max-height: 100%; display: none;">
+        </div>
+        <div id="uploadedImagePreview"
+             style="margin-top: 10px; border: 1px solid #ccc; width: 250px; height: 250px; display: flex; justify-content: center; align-items: center;">
+            <img id="uploadedPreview" src="" alt="上传后图片" style="max-width: 100%; max-height: 100%; display: none;">
+        </div>
+        <div id="downloadLinkContainer" style="margin-top: 10px; display: none;">
+            <a id="downloadLink" href="#" download>下载图片</a>
+        </div>
+        <script>
+            function uploadImage() {
+                const form = document.getElementById('uploadForm');
+                const formData = new FormData(form);
+                const uploadedPreview = document.getElementById('uploadedPreview');
+                const downloadLinkContainer = document.getElementById('downloadLinkContainer');
+                const downloadLink = document.getElementById('downloadLink');
+
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.imageUrl) {
+                            uploadedPreview.src = data.imageUrl;
+                            uploadedPreview.style.display = 'block';
+                            downloadLink.href = data.imageUrl;
+                            downloadLinkContainer.style.display = 'block';
+                        } else {
+                            alert('上传失败');
+                        }
+                    })
+                    .catch(error => alert('上传时发生错误'));
+            }
+        </script>
+    </form>
+    <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('preview');
+            const previewContainer = document.getElementById('imagePreview');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+</html>

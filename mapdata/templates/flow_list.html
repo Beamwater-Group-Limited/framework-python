@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>流程管理</title>
+    <!-- 引入 Tailwind CSS -->
+    <link href="{{ static_url }}/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- 页面头部 -->
+<header class="bg-blue-600 text-white shadow-md">
+    <div class="container mx-auto flex items-center justify-between py-4 px-6">
+        <h1 class="text-2xl font-bold">流程管理</h1>
+        <a href="/add_process"
+           class="bg-green-500 px-4 py-2 rounded text-white hover:bg-green-600 transition duration-200">新增流程</a>
+    </div>
+</header>
+
+<!-- 主内容区域 -->
+<main class="container mx-auto flex-grow mt-8 px-6">
+    <h2 class="text-3xl font-bold text-gray-800 mb-6">流程列表</h2>
+
+    <!-- 流程列表表格 -->
+    <div class="bg-white shadow-md rounded-lg p-4 mb-8">
+        <table class="min-w-full border-collapse">
+            <thead>
+            <tr class="bg-gray-200 text-gray-700">
+                <th class="px-4 py-2 text-left">编号</th>
+                <th class="px-4 py-2 text-left">流程名称</th>
+                <th class="px-4 py-2 text-left">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for process in processes %}
+            <tr class="border-t hover:bg-gray-100">
+                <td class="px-4 py-2">{{ process.id }}</td>
+                <td class="px-4 py-2">{{ process.name }}</td>
+                <td class="px-4 py-2">
+                    <a href="/process/{{ process.id }}/test"
+                       class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition duration-200">测试</a>
+<!--                    <a href="/prefect_flow?process_id={{ process.id }}"-->
+<!--                       class="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 transition duration-200">查看</a>-->
+                    <a href="/properties-panel-async-extension?process_id={{ process.id }}"
+                       class="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 transition duration-200">查看</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3" class="text-center text-gray-500 py-4">没有可用的流程。</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 分页控件 -->
+    <div class="flex justify-between items-center">
+        <div>
+            <p class="text-gray-600">当前页：{{ pagination.current_page }} / {{ pagination.total_pages }}</p>
+        </div>
+        <div class="flex space-x-2">
+            {% if not pagination.is_first_page %}
+            <a href="?page={{ pagination.current_page - 1 }}"
+               class="bg-blue-500 px-4 py-2 text-white rounded hover:bg-blue-600 transition duration-200">上一页</a>
+            {% endif %}
+            {% if not pagination.is_last_page %}
+            <a href="?page={{ pagination.current_page + 1 }}"
+               class="bg-blue-500 px-4 py-2 text-white rounded hover:bg-blue-600 transition duration-200">下一页</a>
+            {% endif %}
+        </div>
+    </div>
+
+</main>
+
+<!-- 页脚 -->
+<footer class="bg-gray-800 text-gray-400 py-4 text-center">
+    <p>&copy; 2023 流程管理. 保留所有权利。</p>
+</footer>
+
+</body>
+</html>
